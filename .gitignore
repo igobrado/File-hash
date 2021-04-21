@@ -1,5 +1,6 @@
 
 # folders
+.vs/
 bin/
 out/
 build/
