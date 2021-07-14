@@ -57,7 +57,7 @@ namespace FileHash
                     updateValue = ProgressBar.Maximum - ProgressBar.Value;
                 }
                 
-                if ((_shouldStop == false) && (ProgressBar.Value == ProgressBar.Value -1))
+                if ((_shouldStop == false) && (ProgressBar.Value == ProgressBar.Value - 1)) // TODO: hacky way, remove
                 {
                     continue;
                 }
