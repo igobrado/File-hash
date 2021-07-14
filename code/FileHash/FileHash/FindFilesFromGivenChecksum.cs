@@ -61,18 +61,18 @@ namespace FileHash
             using (var hasher = new Hasher(hasherType))
             {
                 Finder finder = new Finder();
-#if DEBUG
+
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-#endif
+
                 var files = finder.Find(folderPaths, ChecksumTextbox.Text, hasher);
-#if DEBUG
+
                 sw.Stop();
                 TimeSpan ts = sw.Elapsed;
                 string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
-#endif
+
                 if (files.Item1 == FindStatus.FilesFound)
                 {
                     int i = 1;
@@ -82,10 +82,10 @@ namespace FileHash
                         FoundFiles.Items.Add(line);
                         ++i;
                     }
-#if DEBUG
+
                     String message = String.Format("Finding of files has been successfull! Time elapsed: {0}", elapsedTime);
                     MessageBox.Show(message, "", MessageBoxButtons.OK);
-#endif
+
                 }
                 else if (files.Item1 == FindStatus.InvalidArguments)
                 { // shall not happen

@@ -118,13 +118,10 @@ namespace FileHash
 
             using (var hasher = new Hasher(hasherType))
             {
-#if DEBUG
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-#endif
                 var hashSizeHashTuple = hasher.GetHash(files);
                 ChecksumTextbox.Text =hashSizeHashTuple.Item1;
-#if DEBUG
                 sw.Stop();
                 TimeSpan ts = sw.Elapsed;
                 string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
@@ -133,7 +130,6 @@ namespace FileHash
 
                 String message = String.Format("For files which are having size: {0}MB hashing lasted for {1}", hashSizeHashTuple.Item2.ToString(), elapsedTime);
                 MessageBox.Show(message, "DEBUG", MessageBoxButtons.OK);
-#endif
             }
         }
 
