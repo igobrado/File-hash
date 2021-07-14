@@ -10,5 +10,8 @@
     <Compile Update="FindFilesFromGivenChecksum.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="ProgressBarForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

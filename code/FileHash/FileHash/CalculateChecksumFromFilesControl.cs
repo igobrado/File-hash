@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using FileHashBackend;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace FileHash
 {
@@ -118,18 +120,25 @@ namespace FileHash
 
             using (var hasher = new Hasher(hasherType))
             {
+                ProgressBarForm progressBarForm = new ProgressBarForm();
+                
+                Task.Run(() => progressBarForm.ShowDialog());
                 Stopwatch sw = new Stopwatch();
+
                 sw.Start();
                 var hashSizeHashTuple = hasher.GetHash(files);
-                ChecksumTextbox.Text =hashSizeHashTuple.Item1;
                 sw.Stop();
+                progressBarForm.Stop();
+
+                ChecksumTextbox.Text = hashSizeHashTuple.Item1;
                 TimeSpan ts = sw.Elapsed;
-                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                    ts.Hours, ts.Minutes, ts.Seconds,
-                    ts.Milliseconds / 10);
+                string elapsedTime = String.Format("{0:00}h:{1:00}m:{2:00}s",
+                    ts.Hours, ts.Minutes, ts.Seconds);
 
                 String message = String.Format("For files which are having size: {0}MB hashing lasted for {1}", hashSizeHashTuple.Item2.ToString("#.##"), elapsedTime);
-                MessageBox.Show(message, "DEBUG", MessageBoxButtons.OK);
+                MessageBox.Show(message, "Operation success", MessageBoxButtons.OK);
+
+                progressBarForm.Close();
             }
         }
 

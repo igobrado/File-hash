@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using FileHashBackend;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace FileHash
 {
@@ -61,17 +62,19 @@ namespace FileHash
             using (var hasher = new Hasher(hasherType))
             {
                 Finder finder = new Finder();
+                ProgressBarForm progressBar = new ProgressBarForm();
 
                 Stopwatch sw = new Stopwatch();
+
                 sw.Start();
-
+                Task.Run(() => progressBar.ShowDialog());
                 var files = finder.Find(folderPaths, ChecksumTextbox.Text, hasher);
-
                 sw.Stop();
+                progressBar.Stop();
+
                 TimeSpan ts = sw.Elapsed;
-                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                    ts.Hours, ts.Minutes, ts.Seconds,
-                    ts.Milliseconds / 10);
+                string elapsedTime = String.Format("{0:00}h:{1:00}m:{2:00}s",
+                    ts.Hours, ts.Minutes, ts.Seconds);
 
                 if (files.Item1 == FindStatus.FilesFound)
                 {
@@ -84,8 +87,7 @@ namespace FileHash
                     }
 
                     String message = String.Format("Finding of files has been successfull! Time elapsed: {0}", elapsedTime);
-                    MessageBox.Show(message, "", MessageBoxButtons.OK);
-
+                    MessageBox.Show(message, "Find filče status", MessageBoxButtons.OK);
                 }
                 else if (files.Item1 == FindStatus.InvalidArguments)
                 { // shall not happen
@@ -96,6 +98,7 @@ namespace FileHash
                     String message = String.Format("No files found which are mathcing to checksum {0}.", ChecksumLabel.Text);
                     MessageBox.Show(message, "No files found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
+                progressBar.Close();
             }
         }
 
