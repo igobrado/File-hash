@@ -1,0 +1,9 @@
+Features:
+	* Hashing of multiple files through one stream ( any type of the file is supported )
+	* Get files from the hash ( any type of the file is supported ), you get an exact sequence in which hash was created.
+
+
+Performance checks and possible optimizations ( this highly depends on the hardware you are having, i'm using intel i7 8th gen laptop lenovo thinkpad ):
+	* Performance
+		* 2 FILES combined are size of 4835 MB - hashing lasts for 24 seconds.
+		* 2 FILES combined are size of 4835 MB - finding of that files in exact folder lasts for: 1 min.
