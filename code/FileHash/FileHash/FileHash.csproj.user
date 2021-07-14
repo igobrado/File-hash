@@ -4,5 +4,11 @@
     <Compile Update="Application.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="CalculateChecksumFromFilesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="FindFilesFromGivenChecksum.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
