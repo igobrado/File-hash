@@ -128,7 +128,7 @@ namespace FileHash
                     ts.Hours, ts.Minutes, ts.Seconds,
                     ts.Milliseconds / 10);
 
-                String message = String.Format("For files which are having size: {0}MB hashing lasted for {1}", hashSizeHashTuple.Item2.ToString(), elapsedTime);
+                String message = String.Format("For files which are having size: {0}MB hashing lasted for {1}", hashSizeHashTuple.Item2.ToString("#.##"), elapsedTime);
                 MessageBox.Show(message, "DEBUG", MessageBoxButtons.OK);
             }
         }

@@ -53,11 +53,11 @@ namespace FileHashBackend
             return BitConverter.ToString(_hashAlgorithm.ComputeHash(new CombinationStream.CombinationStream(streams))).Replace("-", "");
         }
 
-        public Tuple<string, long> GetHash(List<string> files)
+        public Tuple<string, float> GetHash(List<string> files)
         {
             if (files.Count == 0)
             {
-                return new Tuple<string, long>("", 0);
+                return new Tuple<string, float>("", 0);
             }
 
             long streamSize = 0;
@@ -69,7 +69,7 @@ namespace FileHashBackend
                 streams.Add(file);
             }
 
-            return new Tuple<string, long>(GetHash(streams), (long)(streamSize / 1048576D));
+            return new Tuple<string, float>(GetHash(streams), (streamSize / 1048576F));
         }
 
         public long HashedFilesSize()
