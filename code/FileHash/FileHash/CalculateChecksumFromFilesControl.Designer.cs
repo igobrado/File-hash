@@ -83,9 +83,9 @@ namespace FileHash
             // 
             this.Select.Location = new System.Drawing.Point(14, 338);
             this.Select.Name = "Select";
-            this.Select.Size = new System.Drawing.Size(75, 23);
+            this.Select.Size = new System.Drawing.Size(86, 23);
             this.Select.TabIndex = 4;
-            this.Select.Text = "Select files";
+            this.Select.Text = "Select folder";
             this.Select.UseVisualStyleBackColor = true;
             this.Select.Click += new System.EventHandler(this.Select_Click);
             // 
