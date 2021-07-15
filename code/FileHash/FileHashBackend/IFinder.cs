@@ -16,5 +16,6 @@ namespace FileHashBackend
     public interface IFinder
     {
         Tuple<FindStatus, List<string>> Find(List<string> foldersToSearch, string checksum, Hasher hasher);
+        List<string> GetAllFilesInDirectory(List<string> foldersToSearch);
     }
 }

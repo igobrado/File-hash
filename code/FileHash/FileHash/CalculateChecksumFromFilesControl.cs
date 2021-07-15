@@ -1,10 +1,9 @@
-﻿using System;
+﻿using FileHashBackend;
+using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using FileHashBackend;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Threading;
+using System.Windows.Forms;
 
 namespace FileHash
 {
@@ -35,31 +34,28 @@ namespace FileHash
 
         private void LoadOpenFileDialog(object sender, EventArgs e)
         {
-            _openFileDialog = new OpenFileDialog { 
-                InitialDirectory = "c:\\",
-                Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
-                FilterIndex = 2,
-                RestoreDirectory = true,
-                Multiselect = true
-             };
+            _selectFolderDialog = new FolderBrowserDialog { };
         }
 
         private void Select_Click(object sender, EventArgs e)
         {
-            DialogResult result = _openFileDialog.ShowDialog();
+            DialogResult result = _selectFolderDialog.ShowDialog();
 
             if (result == DialogResult.OK)
             {
-                foreach (var item in _openFileDialog.FileNames)
+                var finder = new Finder();
+                var files = finder.GetAllFilesInDirectory(new List<string> { _selectFolderDialog.SelectedPath });
+
+                foreach (var file in files)
                 {
-                    SelectedFiles.Items.Add(item);
+                    SelectedFiles.Items.Add(file);
                 }
             }
         }
 
         private void InitializeSelectedFilesListbox(object sender, EventArgs e)
         {
-            SelectedFiles.View = View.List;
+            SelectedFiles.View = View.SmallIcon;
             SelectedFiles.MultiSelect = true;
             SelectedFiles.KeyDown += new KeyEventHandler(OnKeyPressed);
             SelectedFiles.MouseClick += new MouseEventHandler(OnMouseKeyPressed);
@@ -170,6 +166,6 @@ namespace FileHash
             ChecksumTextbox.Text = "";
         }
 
-        private OpenFileDialog _openFileDialog;
+        private FolderBrowserDialog _selectFolderDialog;
     }
 }

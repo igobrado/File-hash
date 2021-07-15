@@ -55,5 +55,26 @@ namespace FileHashBackend
 
             return new Tuple<FindStatus, List<string>>(FindStatus.FilesNotFound, new List<string>());
         }
+
+        public List<string> GetAllFilesInDirectory(List<string> foldersToSearch)
+        {
+            var fileList = new List<string>();
+
+            foreach (var folderPath in foldersToSearch)
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+                if (!directoryInfo.Exists)
+                {
+                    continue;
+                }
+
+                foreach (var file in directoryInfo.GetFiles())
+                {
+                    fileList.Add(file.FullName);
+                }
+            }
+
+            return fileList;
+        }
     }
 }

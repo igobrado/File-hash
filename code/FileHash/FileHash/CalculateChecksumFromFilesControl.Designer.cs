@@ -35,9 +35,9 @@ namespace FileHash
             this.ChecksumTextbox = new System.Windows.Forms.TextBox();
             this.Select = new System.Windows.Forms.Button();
             this.HashingAlgorithmsGroupbox = new System.Windows.Forms.GroupBox();
-            this.SHA256Checkbox = new System.Windows.Forms.CheckBox();
-            this.SHA1Checkbox = new System.Windows.Forms.CheckBox();
             this.MD5Checkbox = new System.Windows.Forms.CheckBox();
+            this.SHA1Checkbox = new System.Windows.Forms.CheckBox();
+            this.SHA256Checkbox = new System.Windows.Forms.CheckBox();
             this.HashingAlgorithmsGroupbox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,12 +52,14 @@ namespace FileHash
             // 
             // SelectedFiles
             // 
+            this.SelectedFiles.Alignment = System.Windows.Forms.ListViewAlignment.Left;
             this.SelectedFiles.HideSelection = false;
             this.SelectedFiles.Location = new System.Drawing.Point(14, 61);
             this.SelectedFiles.Name = "SelectedFiles";
-            this.SelectedFiles.Size = new System.Drawing.Size(383, 271);
+            this.SelectedFiles.Size = new System.Drawing.Size(322, 271);
             this.SelectedFiles.TabIndex = 1;
             this.SelectedFiles.UseCompatibleStateImageBehavior = false;
+            this.SelectedFiles.View = System.Windows.Forms.View.SmallIcon;
             // 
             // Calculate
             // 
@@ -99,15 +101,15 @@ namespace FileHash
             this.HashingAlgorithmsGroupbox.TabStop = false;
             this.HashingAlgorithmsGroupbox.Text = "Hashing algorithm";
             // 
-            // SHA256Checkbox
+            // MD5Checkbox
             // 
-            this.SHA256Checkbox.AutoSize = true;
-            this.SHA256Checkbox.Location = new System.Drawing.Point(15, 19);
-            this.SHA256Checkbox.Name = "SHA256Checkbox";
-            this.SHA256Checkbox.Size = new System.Drawing.Size(67, 19);
-            this.SHA256Checkbox.TabIndex = 0;
-            this.SHA256Checkbox.Text = "SHA256";
-            this.SHA256Checkbox.UseVisualStyleBackColor = true;
+            this.MD5Checkbox.AutoSize = true;
+            this.MD5Checkbox.Location = new System.Drawing.Point(15, 69);
+            this.MD5Checkbox.Name = "MD5Checkbox";
+            this.MD5Checkbox.Size = new System.Drawing.Size(51, 19);
+            this.MD5Checkbox.TabIndex = 2;
+            this.MD5Checkbox.Text = "MD5";
+            this.MD5Checkbox.UseVisualStyleBackColor = true;
             // 
             // SHA1Checkbox
             // 
@@ -119,15 +121,15 @@ namespace FileHash
             this.SHA1Checkbox.Text = "SHA1";
             this.SHA1Checkbox.UseVisualStyleBackColor = true;
             // 
-            // MD5Checkbox
+            // SHA256Checkbox
             // 
-            this.MD5Checkbox.AutoSize = true;
-            this.MD5Checkbox.Location = new System.Drawing.Point(15, 69);
-            this.MD5Checkbox.Name = "MD5Checkbox";
-            this.MD5Checkbox.Size = new System.Drawing.Size(51, 19);
-            this.MD5Checkbox.TabIndex = 2;
-            this.MD5Checkbox.Text = "MD5";
-            this.MD5Checkbox.UseVisualStyleBackColor = true;
+            this.SHA256Checkbox.AutoSize = true;
+            this.SHA256Checkbox.Location = new System.Drawing.Point(15, 19);
+            this.SHA256Checkbox.Name = "SHA256Checkbox";
+            this.SHA256Checkbox.Size = new System.Drawing.Size(67, 19);
+            this.SHA256Checkbox.TabIndex = 0;
+            this.SHA256Checkbox.Text = "SHA256";
+            this.SHA256Checkbox.UseVisualStyleBackColor = true;
             // 
             // CalculateChecksumFromFilesControl
             // 
