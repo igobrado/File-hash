@@ -56,13 +56,15 @@ namespace FileHash
                 {
                     indexOffset = 1;
                 }
-                
-                var tmpString = SelectedFiles.Items[itemIndex].Text;
 
-                SelectedFiles.Items[itemIndex].Text = SelectedFiles.Items[itemIndex + indexOffset].Text;
-                SelectedFiles.Items[itemIndex + indexOffset].Text = tmpString;
+                if (indexOffset != 0)
+                {
+                    var tmpString = SelectedFiles.Items[itemIndex].Text;
+
+                    SelectedFiles.Items[itemIndex].Text = SelectedFiles.Items[itemIndex + indexOffset].Text;
+                    SelectedFiles.Items[itemIndex + indexOffset].Text = tmpString;
+                }
             }
-
         }
 
         private void LoadOpenFileDialog(object sender, EventArgs e)
