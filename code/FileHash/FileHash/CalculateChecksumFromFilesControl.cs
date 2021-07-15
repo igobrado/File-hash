@@ -14,6 +14,7 @@ namespace FileHash
             InitializeComponent();
             Load += LoadOpenFileDialog;
             Load += InitializeSelectedFilesListbox;
+            SelectedFiles.KeyDown += on_keypress;
         }
 
         public void ResetToInitialState()
@@ -30,6 +31,38 @@ namespace FileHash
             SHA1Checkbox.Checked = false;
             MD5Checkbox.Checked = false;
             ChecksumTextbox.Text = "";
+        }
+
+        private void on_keypress(object sender, EventArgs e)
+        {
+            KeyEventArgs arg = (KeyEventArgs)e;
+
+            if (arg == null)
+            {
+                return;
+            }
+
+            int indexOffset = 0;
+
+            if (SelectedFiles.SelectedItems.Count == 1)
+            {
+                var itemIndex = SelectedFiles.SelectedItems[0].Index;
+
+                if (arg.KeyCode == Keys.Up)
+                {
+                    indexOffset = -1;
+                }
+                else if (arg.KeyCode == Keys.Down)
+                {
+                    indexOffset = 1;
+                }
+                
+                var tmpString = SelectedFiles.Items[itemIndex].Text;
+
+                SelectedFiles.Items[itemIndex].Text = SelectedFiles.Items[itemIndex + indexOffset].Text;
+                SelectedFiles.Items[itemIndex + indexOffset].Text = tmpString;
+            }
+
         }
 
         private void LoadOpenFileDialog(object sender, EventArgs e)
