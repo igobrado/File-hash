@@ -6,17 +6,17 @@ namespace FileHashBackend
 {
     class Combiner<T>
     {
-        public Combiner(List<T> listToGetAllPossibleCombinations)
+        public Combiner(List<T> listOfFilesToCombine)
         {
-            _list = listToGetAllPossibleCombinations;
+            _listOfFilesToCombine = listOfFilesToCombine;
         }
 
         public List<List<T>> GetAllCombinations()
         {
             var listOfAllCombinations = new List<List<T>>();
-            for (int i = 1; i <= _list.Count; ++i)
+            for (int i = 1; i <= _listOfFilesToCombine.Count; ++i)
             {
-                Combinations<T> c = new Combinations<T>(_list, i);
+                Combinations<T> c = new Combinations<T>(_listOfFilesToCombine, i);
                 foreach (var item in c)
                 {
                     listOfAllCombinations.Add(item.ToList());
@@ -32,11 +32,12 @@ namespace FileHashBackend
                 {
                     listOfAllPermutations.Add(permutation.ToList());
                 }
+
             }
 
             return listOfAllPermutations;
         }
 
-        private readonly List<T> _list;
+        private readonly List<T> _listOfFilesToCombine;
     }
 }
