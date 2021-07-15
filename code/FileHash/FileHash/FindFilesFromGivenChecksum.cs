@@ -27,6 +27,7 @@ namespace FileHash
                 FoundFiles.SelectedItems[i].Text = "";
             }
 
+            ChecksumTextbox.Text = "";
             SHA1Checkbox.Checked = false;
             SHA256Checkbox.Checked = false;
             MD5Checkbox.Checked = false;
