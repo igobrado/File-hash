@@ -96,7 +96,7 @@ namespace FileHash
                 }
                 else
                 {
-                    String message = String.Format("No files found which are mathcing to checksum {0}.", ChecksumLabel.Text);
+                    String message = String.Format("No files found which are mathcing to checksum {0} Time elapsed:{1}.", ChecksumLabel.Text, elapsedTime);
                     MessageBox.Show(message, "No files found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 progressBar.Close();
