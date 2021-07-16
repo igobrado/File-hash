@@ -92,8 +92,8 @@ namespace FileHash
         {
             SelectedFiles.View = View.SmallIcon;
             SelectedFiles.MultiSelect = true;
-            SelectedFiles.KeyDown += new KeyEventHandler(OnKeyPressed);
-            SelectedFiles.MouseClick += new MouseEventHandler(OnMouseKeyPressed);
+            SelectedFiles.KeyDown += new KeyEventHandler(OnListboxKeyDown);
+            SelectedFiles.MouseClick += new MouseEventHandler(OnListboxMouseClick);
 
             ContextMenuStrip m = new ContextMenuStrip();
             // Add menu items to the MenuItems collection.
@@ -103,7 +103,7 @@ namespace FileHash
             m.Click += OnMouseKeyPressedContextStripMenu;
         }
 
-        protected virtual void OnKeyPressed(object sender, KeyEventArgs e)
+        protected void OnListboxKeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -111,7 +111,7 @@ namespace FileHash
             }
         }
 
-        protected virtual void OnMouseKeyPressed(object sender, MouseEventArgs e)
+        protected void OnListboxMouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -119,7 +119,7 @@ namespace FileHash
             }
         }
 
-        protected virtual void OnMouseKeyPressedContextStripMenu(object sender, EventArgs e)
+        protected void OnMouseKeyPressedContextStripMenu(object sender, EventArgs e)
         {
             var trueEvent = (MouseEventArgs)e;
             if (trueEvent == null)
@@ -159,6 +159,7 @@ namespace FileHash
                 sw.Start();
                 var hashSizeHashTuple = hasher.GetHash(files);
                 sw.Stop();
+
                 progressBarForm.Stop();
 
                 ChecksumTextbox.Text = hashSizeHashTuple.Item1;
@@ -166,8 +167,7 @@ namespace FileHash
                 string elapsedTime = String.Format("{0:00}h:{1:00}m:{2:00}s",
                     ts.Hours, ts.Minutes, ts.Seconds);
 
-                String message = String.Format("For files which are having size: {0}MB hashing lasted for {1}", hashSizeHashTuple.Item2.ToString("#.##"), elapsedTime);
-                MessageBox.Show(message, "Operation success", MessageBoxButtons.OK);
+                MessageBox.Show(String.Format("For files which are having size: {0}MB hashing lasted for {1}", hashSizeHashTuple.Item2.ToString("#.##"), elapsedTime), "Operation success", MessageBoxButtons.OK);
 
                 progressBarForm.Close();
             }

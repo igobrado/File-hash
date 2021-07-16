@@ -16,6 +16,9 @@ namespace FileHashBackend
         Invalid
     }
 
+    /// <summary>
+    /// Provides an abstraction around hashing functions.
+    /// </summary>
     public class Hasher : IDisposable
     {
         public Hasher(HasherType wantedHasherType)
@@ -37,22 +40,17 @@ namespace FileHashBackend
             }
         }
 
-        public IEnumerable<string> FindFilesThatAreMachingToChecksum(string checksum, List<string> placesToSearch)
-        {
-            if (checksum.Length == 0 || placesToSearch.Count == 0)
-            {
-                return new List<string>();
-            }
-            
-            List<string> files = new List<string>();
-            return files;
-        }
-
         public string GetHash(List<System.IO.Stream> streams)
         {
             return BitConverter.ToString(_hashAlgorithm.ComputeHash(new CombinationStream.CombinationStream(streams))).Replace("-", "");
         }
 
+        /// <summary>
+        /// Gets the hash of the providen files.
+        /// </summary>
+        /// <param name="files"></param>
+        /// 
+        /// <returns> Tuple which contains pair - <HASH, Size of files combined in MB> </returns>
         public Tuple<string, float> GetHash(List<string> files)
         {
             if (files.Count == 0)
@@ -72,12 +70,6 @@ namespace FileHashBackend
             return new Tuple<string, float>(GetHash(streams), (streamSize / 1048576F));
         }
 
-        public long HashedFilesSize()
-        {
-            long numb = 0;
-            return numb;
-        }
-
         public void Dispose()
         {
             _hashAlgorithm.Dispose();
@@ -86,3 +78,4 @@ namespace FileHashBackend
         private HashAlgorithm _hashAlgorithm;
     }
 }
+ 
