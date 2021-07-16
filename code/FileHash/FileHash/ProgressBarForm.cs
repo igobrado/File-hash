@@ -82,7 +82,7 @@ namespace FileHash
             if (ProgressBar.Value + value <= 100)
             {
                 ProgressBar.Value += value;
-                label1.Text = ProgressBar.Value.ToString() + "%";
+                ProgressPercentage.Text = ProgressBar.Value.ToString() + "%";
             }
         }
 
