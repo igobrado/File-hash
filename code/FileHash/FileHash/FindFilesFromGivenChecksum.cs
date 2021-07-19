@@ -24,7 +24,7 @@ namespace FileHash
         {
             for(int i = 0; i < FoundFiles.SelectedItems.Count; ++i)
             {
-                FoundFiles.SelectedItems[i].Text = "";
+                FoundFiles.Items[i].Remove();
             }
 
             ChecksumTextbox.Text = "";
@@ -69,7 +69,7 @@ namespace FileHash
 
                 sw.Start();
                 Task.Run(() => progressBar.ShowDialog());
-                var files = finder.Find(folderPaths, ChecksumTextbox.Text, hasher);
+                var findResult = finder.Find(folderPaths, ChecksumTextbox.Text, hasher);
                 sw.Stop();
                 progressBar.Stop();
 
@@ -77,10 +77,10 @@ namespace FileHash
                 string elapsedTime = String.Format("{0:00}h:{1:00}m:{2:00}s",
                     ts.Hours, ts.Minutes, ts.Seconds);
 
-                if (files.Item1 == FindStatus.FilesFound)
+                if (findResult.findStatus == FindStatus.FilesFound)
                 {
                     int i = 1;
-                    foreach (var file in files.Item2)
+                    foreach (var file in findResult.files)
                     {
                         String line = String.Format("{0} {1}", i, file);
                         FoundFiles.Items.Add(line);
@@ -90,7 +90,7 @@ namespace FileHash
                     String message = String.Format("Finding of files has been successfull! Time elapsed: {0}", elapsedTime);
                     MessageBox.Show(message, "Find filče status", MessageBoxButtons.OK);
                 }
-                else if (files.Item1 == FindStatus.InvalidArguments)
+                else if (findResult.findStatus == FindStatus.InvalidArguments)
                 { // shall not happen
                     MessageBox.Show("Invalid arguments, you need to provide checksum and folders to search", "Invalid argument error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }

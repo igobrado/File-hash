@@ -13,6 +13,13 @@ namespace FileHashBackend
         InvalidArguments
     }
 
+    public struct FindResult
+    {
+        public FindStatus findStatus;
+        public List<string> files;
+        public double filesSize;
+    }
+
     public interface IFinder
     {
         /// <summary>
@@ -25,7 +32,7 @@ namespace FileHashBackend
         /// <param name="checksum"></param>
         /// <param name="hasher"></param>
         /// <returns></returns>
-        Tuple<FindStatus, List<string>> Find(List<string> foldersToSearch, string checksum, Hasher hasher);
+        FindResult Find(List<string> foldersToSearch, string checksum, Hasher hasher);
 
         /// <summary>
         /// Methods is getting all the files in the directory.
