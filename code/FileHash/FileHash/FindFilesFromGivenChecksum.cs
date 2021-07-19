@@ -87,8 +87,7 @@ namespace FileHash
                         ++i;
                     }
 
-                    String message = String.Format("Finding of files has been successfull! Time elapsed: {0}", elapsedTime);
-                    MessageBox.Show(message, "Find filče status", MessageBoxButtons.OK);
+                    MessageBox.Show(String.Format("Finding of files has been successfull! Time elapsed: {0}", elapsedTime), "Find filče status", MessageBoxButtons.OK);
                 }
                 else if (findResult.findStatus == FindStatus.InvalidArguments)
                 { // shall not happen

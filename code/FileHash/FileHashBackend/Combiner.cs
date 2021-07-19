@@ -7,8 +7,6 @@ using System.IO;
 
 namespace FileHashBackend
 {
-
-
     class Combiner
     {
         public Combiner(List<string> listOfFilesToCombine)
@@ -16,6 +14,12 @@ namespace FileHashBackend
             _listOfFilesToCombine = listOfFilesToCombine;
         }
 
+        /// <summary>
+        /// Finds a files which were used to combine checksum.
+        /// </summary>
+        /// <param name="checksum"></param>
+        /// <param name="hasher"></param>
+        /// <returns></returns>
         public FindResult FindInCombinations(string checksum, Hasher hasher)
         {
             var listOfAllCombinations = GetCombinations();
@@ -37,6 +41,10 @@ namespace FileHashBackend
             return new FindResult { findStatus = FindStatus.FilesNotFound, files = null, filesSize = 0};
         }
 
+        /// <summary>
+        /// Calculates all of the combinations of the given files in constructor.
+        /// </summary>
+        /// <returns></returns>
         List<List<string>> GetCombinations()
         {
             var listOfAllCombinations = new List<List<string>>();
