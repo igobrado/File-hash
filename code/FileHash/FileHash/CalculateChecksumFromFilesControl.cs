@@ -22,11 +22,7 @@ namespace FileHash
             Visible = false;
             Enabled = false;
 
-            for (int i = 0; i < SelectedFiles.Items.Count; ++i)
-            {
-                SelectedFiles.Items[i].Text = "";
-            }
-
+            SelectedFiles.Items.Clear();
             SHA256Checkbox.Checked = false;
             SHA1Checkbox.Checked = false;
             MD5Checkbox.Checked = false;

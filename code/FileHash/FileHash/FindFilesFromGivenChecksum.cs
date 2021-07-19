@@ -22,10 +22,7 @@ namespace FileHash
 
         public void ResetToInitialState()
         {
-            for(int i = 0; i < FoundFiles.SelectedItems.Count; ++i)
-            {
-                FoundFiles.Items[i].Remove();
-            }
+            FoundFiles.Items.Clear();
 
             ChecksumTextbox.Text = "";
             SHA1Checkbox.Checked = false;
