@@ -57,8 +57,8 @@ namespace FileHash
                 {
                     var tmpString = SelectedFiles.Items[itemIndex].Text;
 
-                    SelectedFiles.Items[itemIndex].Text = SelectedFiles.Items[itemIndex + indexOffset].Text;
-                    SelectedFiles.Items[itemIndex + indexOffset].Text = tmpString;
+                    //SelectedFiles.Items[itemIndex].Text = SelectedFiles.Items[itemIndex - indexOffset].Text;
+                    //SelectedFiles.Items[itemIndex - indexOffset].Text = tmpString;
                 }
             }
         }
