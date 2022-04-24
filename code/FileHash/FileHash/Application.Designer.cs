@@ -45,8 +45,9 @@ namespace FileHash
             this._addFileButton = new System.Windows.Forms.Button();
             this._evaluatedHashTextbox = new System.Windows.Forms.TextBox();
             this._evaluatedHashLabel = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this._progressBar = new System.Windows.Forms.ProgressBar();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this._hashingAlgorithmBox.SuspendLayout();
             this._filesGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -201,12 +202,12 @@ namespace FileHash
             this._evaluatedHashLabel.TabIndex = 5;
             this._evaluatedHashLabel.Text = "Evaluated hash:";
             // 
-            // progressBar1
+            // _progressBar
             // 
-            this.progressBar1.Location = new System.Drawing.Point(28, 325);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(697, 12);
-            this.progressBar1.TabIndex = 6;
+            this._progressBar.Location = new System.Drawing.Point(28, 325);
+            this._progressBar.Name = "_progressBar";
+            this._progressBar.Size = new System.Drawing.Size(697, 12);
+            this._progressBar.TabIndex = 6;
             // 
             // contextMenuStrip1
             // 
@@ -218,7 +219,7 @@ namespace FileHash
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(738, 348);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this._progressBar);
             this.Controls.Add(this._evaluatedHashLabel);
             this.Controls.Add(this._evaluatedHashTextbox);
             this.Controls.Add(this._filesGroupBox);
@@ -253,8 +254,9 @@ namespace FileHash
         private System.Windows.Forms.Button _addFileButton;
         private System.Windows.Forms.TextBox _evaluatedHashTextbox;
         private System.Windows.Forms.Label _evaluatedHashLabel;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar _progressBar;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 

@@ -53,10 +53,25 @@ namespace FileHash
 
             using (Hasher hasher = new Hasher(hasherType))
             {
+                hasher.Handler += new EventHandler<IncreasedPercentage>(OnProgressChanged);
                 _evaluatedHashTextbox.Text = hasher.GetHash(files).Item1.ToString();
+
+                MessageBox.Show("Done!");
             }
         }
 
+        public void OnProgressChanged(object sender, IncreasedPercentage args)
+        {
+            if (args == null)
+            {
+                return;
+            }
+
+            if (args.Percentage <= _progressBar.Maximum)
+            {
+                _progressBar.Value = (int)args.Percentage;
+            }
+        }
         private void OnItemMoveUpInTheList(object sender, EventArgs e)
         {
             if (_selectedFilesCheckbox.SelectedItems.Count == 1)

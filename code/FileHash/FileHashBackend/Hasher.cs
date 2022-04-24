@@ -55,17 +55,20 @@ namespace FileHashBackend
         public string GetHash(List<System.IO.Stream> streams, ulong streamSize)
         {
             var block = ArrayPool<byte>.Shared.Rent(0);
-
+            float progress = 0;
             foreach (var stream in streams)
             {
+                block = ArrayPool<byte>.Shared.Rent(8192);
+
                 int length;
                 while ((length = stream.Read(block, 0, block.Length)) > 0)
                 {
                     _hashAlgorithm.TransformBlock(block, 0, length, null, 0);
 
-                    float progress = length;
+                    progress += length;
                     float completedPercentage = (progress / streamSize) * 100;
-                    Handler?.Invoke(this, new IncreasedPercentage(completedPercentage));
+
+                    OnUserUpdate(new IncreasedPercentage(completedPercentage));
                 }
             }
             _hashAlgorithm.TransformFinalBlock(block, 0, 0);
@@ -103,6 +106,14 @@ namespace FileHashBackend
             _hashAlgorithm.Dispose();
         }
 
+        protected virtual void OnUserUpdate(IncreasedPercentage e)
+        {
+            EventHandler<IncreasedPercentage> raiseEvent = Handler;
+            if (raiseEvent != null)
+            {
+                raiseEvent(this, e);
+            }
+        }
         private HashAlgorithm _hashAlgorithm;
     }
 }
