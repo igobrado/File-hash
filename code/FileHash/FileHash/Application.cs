@@ -42,12 +42,17 @@ namespace FileHash
 
             var files = new List<string>();
 
-            foreach (var item in _filePaths)
+            var checkedItmes = _selectedFilesCheckbox.CheckedItems;
+            foreach(var file in checkedItmes)
             {
-                int index = _selectedFilesCheckbox.FindString(Path.GetFileName(item));
-                if ((index != ListBox.NoMatches) && (_selectedFilesCheckbox.GetItemChecked(index) == true))
+                string path = _filePaths.Find(s =>
                 {
-                    files.Add(item);
+                    return Path.GetFileName(s) == file.ToString();
+                });
+
+                if (path != null)
+                {
+                    files.Add(path);
                 }
             }
 
