@@ -32,7 +32,7 @@ namespace FileHashBackend
     /// </summary>
     public class Hasher : IDisposable
     {
-        public EventHandler<IncreasedPercentage> Handler;
+        public EventHandler<IncreasedPercentage> HashProgress;
         public Hasher(HasherType wantedHasherType)
         {
             switch (wantedHasherType)
@@ -108,12 +108,13 @@ namespace FileHashBackend
 
         protected virtual void OnUserUpdate(IncreasedPercentage e)
         {
-            EventHandler<IncreasedPercentage> raiseEvent = Handler;
+            EventHandler<IncreasedPercentage> raiseEvent = HashProgress;
             if (raiseEvent != null)
             {
                 raiseEvent(this, e);
             }
         }
+
         private HashAlgorithm _hashAlgorithm;
     }
 }

@@ -53,7 +53,7 @@ namespace FileHash
 
             using (Hasher hasher = new Hasher(hasherType))
             {
-                hasher.Handler += new EventHandler<IncreasedPercentage>(OnProgressChanged);
+                hasher.HashProgress += new EventHandler<IncreasedPercentage>(OnProgressChanged);
                 _evaluatedHashTextbox.Text = hasher.GetHash(files).Item1.ToString();
 
                 MessageBox.Show("Done!");
