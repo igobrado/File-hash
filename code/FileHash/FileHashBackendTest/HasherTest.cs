@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace FileHashBackendTest
 {
-    public class Tests
+    public class HasherTest
     {
         [SetUp]
         public void Setup()
