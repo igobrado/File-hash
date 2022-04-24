@@ -26,6 +26,10 @@ namespace FileHashBackend
                 }
             }
 
+            if (fileList.Count == 0)
+            {
+                return new FindResult { findStatus = FindStatus.FilesNotFound, files = null, filesSize = 0 };
+            }
 
             var combiner = new Combiner(fileList);
             combiner.FindProgress += new EventHandler<IncreasedPercentage>(OnUserUpdate);
