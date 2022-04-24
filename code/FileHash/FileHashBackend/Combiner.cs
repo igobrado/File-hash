@@ -9,6 +9,7 @@ namespace FileHashBackend
 {
     class Combiner
     {
+        public EventHandler<IncreasedPercentage> FindProgress;
         public Combiner(List<string> listOfFilesToCombine)
         {
             _listOfFilesToCombine = listOfFilesToCombine;
@@ -24,6 +25,8 @@ namespace FileHashBackend
         {
             var listOfAllCombinations = GetCombinations();
 
+            ulong combinationCount = (ulong)listOfAllCombinations.Count;
+            float progress = 0;
             foreach (var combinaton in listOfAllCombinations)
             {
                 Permutations<string> permutations = new Permutations<string>(combinaton);
@@ -33,12 +36,21 @@ namespace FileHashBackend
 
                     if (hash.Item1 == checksum)
                     {
-                        return new FindResult { findStatus = FindStatus.FilesFound, files = permutation.ToList(), filesSize = hash.Item2};
+                        var result = new FindResult { findStatus = FindStatus.FilesFound, files = permutation.ToList(), filesSize = hash.Item2};
+                        OnUserUpdate(new IncreasedPercentage(100));
+                        return result;
+                    }
+                    else
+                    {
+                        ++progress;
+                        float completedPercentage = (progress / combinationCount) * 100;
+                        OnUserUpdate(new IncreasedPercentage(completedPercentage));
                     }
                 }
             }
 
-            return new FindResult { findStatus = FindStatus.FilesNotFound, files = null, filesSize = 0};
+            OnUserUpdate(new IncreasedPercentage(100));
+            return new FindResult { findStatus = FindStatus.FilesNotFound, files = null, filesSize = 0 };
         }
 
         /// <summary>
@@ -60,6 +72,14 @@ namespace FileHashBackend
             return listOfAllCombinations;
         }
 
+        protected virtual void OnUserUpdate(IncreasedPercentage percentage)
+        {
+            EventHandler<IncreasedPercentage> raiseEvent = FindProgress;
+            if (raiseEvent != null)
+            {
+                raiseEvent(this, percentage);
+            }
+        }
         private readonly List<string> _listOfFilesToCombine;
     }
 }

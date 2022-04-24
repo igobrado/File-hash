@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace FileHashBackend
 {
     public class Finder : IFinder
     {
+        public EventHandler<IncreasedPercentage> FindProgress;
+
         public FindResult Find(List<string> foldersToSearch, string checksum, Hasher hasher)
         {
             var fileList = new List<string>();
@@ -23,7 +26,10 @@ namespace FileHashBackend
                 }
             }
 
+
             var combiner = new Combiner(fileList);
+            combiner.FindProgress += new EventHandler<IncreasedPercentage>(OnUserUpdate);
+
             return combiner.FindInCombinations(checksum, hasher);
         }
 
@@ -46,6 +52,15 @@ namespace FileHashBackend
             }
 
             return fileList;
+        }
+
+        protected virtual void OnUserUpdate(object sender, IncreasedPercentage percentage)
+        {
+            EventHandler<IncreasedPercentage> raiseEvent = FindProgress;
+            if (raiseEvent != null)
+            {
+                raiseEvent(this, percentage);
+            }
         }
     }
 }
