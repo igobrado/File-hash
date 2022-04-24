@@ -12,6 +12,7 @@ namespace FileHashBackend
         SHA256,
         MD5,
         SHA1,
+        CRC32,
         Invalid
     }
     /// <summary>
