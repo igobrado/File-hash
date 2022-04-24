@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Diagnostics;
+using System.Buffers;
+using System.IO;
 
 namespace FileHashBackend
 {
@@ -12,12 +14,24 @@ namespace FileHashBackend
         SHA1,
         Invalid
     }
+    /// <summary>
+    /// Custom event arguments which provides a progress of the current operation.
+    /// </summary>
+    public class IncreasedPercentage : EventArgs
+    {
+        public IncreasedPercentage(float percentage)
+        {
+            Percentage = percentage;
+        }
+        public float Percentage { get; set; }
+    }
 
     /// <summary>
     /// Provides an abstraction around hashing functions.
     /// </summary>
     public class Hasher : IDisposable
     {
+        public EventHandler<IncreasedPercentage> Handler;
         public Hasher(HasherType wantedHasherType)
         {
             switch (wantedHasherType)
@@ -64,7 +78,7 @@ namespace FileHashBackend
                 streams.Add(file);
             }
 
-            return new Tuple<string, float>(GetHash(streams), (streamSize / 1048576F));
+            return new Tuple<string, float>(GetHash(streams, streamSize), (streamSize / 1048576F));
         }
 
         public void Dispose()
