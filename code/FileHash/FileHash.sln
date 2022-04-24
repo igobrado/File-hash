@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31205.134
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHash", "FileHash\FileHash.csproj", "{CADE20ED-5A0F-41A8-BB5C-F54E5C122136}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileHashBackend", "FileHashBackend\FileHashBackend.csproj", "{3E0192C5-C3C0-4313-B681-5D39038881BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHashBackend", "FileHashBackend\FileHashBackend.csproj", "{3E0192C5-C3C0-4313-B681-5D39038881BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileHashBackendTest", "FileHashBackendTest\FileHashBackendTest.csproj", "{5859C943-3149-4B0A-B055-A6A905C297F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{3E0192C5-C3C0-4313-B681-5D39038881BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E0192C5-C3C0-4313-B681-5D39038881BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E0192C5-C3C0-4313-B681-5D39038881BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5859C943-3149-4B0A-B055-A6A905C297F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5859C943-3149-4B0A-B055-A6A905C297F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5859C943-3149-4B0A-B055-A6A905C297F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5859C943-3149-4B0A-B055-A6A905C297F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
