@@ -95,7 +95,7 @@ namespace FileHashBackend
                 streams.Add(file);
             }
 
-            return new Tuple<string, float>(GetHash(streams, streamSize), (streamSize / 1048576F));
+            return new Tuple<string, float>(GetHash(streams, (ulong) streamSize), (streamSize / 1048576F));
         }
 
         public void Dispose()
