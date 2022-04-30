@@ -12,7 +12,6 @@ namespace FileHashBackend
         SHA256,
         MD5,
         SHA1,
-        CRC32,
         Invalid
     }
     /// <summary>
@@ -90,7 +89,8 @@ namespace FileHashBackend
             }
 
             long streamSize = 0;
-            var streams = new List<System.IO.Stream>();
+
+                var streams = new List<System.IO.Stream>();
             foreach (var item in files)
             {
                 var file = System.IO.File.OpenRead(item);
@@ -98,7 +98,22 @@ namespace FileHashBackend
                 streams.Add(file);
             }
 
-            return new Tuple<string, float>(GetHash(streams, (ulong) streamSize), (streamSize / 1048576F));
+            var result = new Tuple<string, float>(GetHash(streams, (ulong) streamSize), (streamSize / 1048576F));
+
+            // files are needing to be disposed, as noone can use it until garbage
+            // collector comes into play
+            foreach (var item in streams)
+            {
+                try
+                {
+                    item.Dispose();
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            return result;
         }
 
         public void Dispose()

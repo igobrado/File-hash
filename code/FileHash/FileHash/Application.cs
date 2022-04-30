@@ -220,10 +220,6 @@ namespace FileHash
             {
                 return HasherType.MD5;
             }
-            else if(_crc32HAlgo.Checked)
-            {
-                return HasherType.CRC32;
-            }
 
             return HasherType.Invalid;
         }
