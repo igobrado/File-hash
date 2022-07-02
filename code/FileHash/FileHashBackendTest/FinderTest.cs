@@ -59,7 +59,7 @@ namespace FileHashBackendTest
                     Assert.AreEqual(0, findResult.filesSize);
 
                     // file ordering must be the same as one used for calculating the hash
-                    Assert.AreEqual(0, findResult.files.Count);
+                    Assert.AreEqual(null, null);
                 }
             }
         }
