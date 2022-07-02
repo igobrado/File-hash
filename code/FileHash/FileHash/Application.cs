@@ -28,8 +28,83 @@ namespace FileHash
             _moveUpButton.Click += new EventHandler(OnItemMoveUpInTheList);
             _moveDownButton.Click += new EventHandler(OnItemMoveDownInTheList);
             _calculateHashButton.Click += new EventHandler(OnCalculate);
+            _findFilesButton.Click += new EventHandler(OnFindFiles);
         }
         
+        private void OnFindFiles(object sender, EventArgs e)
+        {
+            if (_selectedFilesCheckbox.Items.Count > 0)
+            {
+                MessageBox.Show("To enable file search by the checksum, you must clear the file list!", "Find files error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (_evaluatedHashTextbox.Text.Length == 0)
+            {
+                MessageBox.Show("To enable file search by the checksum, you must enter a checksum that files are combining together.", "Find files error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var folders = new List<string>();
+
+            using (var fbd = new FolderBrowserDialog())
+            {
+                if (System.Windows.Forms.MessageBox.Show("Please select folder to search the files.", "Select folder", MessageBoxButtons.OK) == DialogResult.Cancel)
+                {
+                    return;
+                }
+
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    if (fbd.SelectedPath.Length == 0)
+                    {
+                        return;
+                    }
+
+                    folders.Add(fbd.SelectedPath);
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+
+            var hasherType = GetSelectedHasherType();
+            if ( hasherType == HasherType.Invalid)
+            {
+
+                MessageBox.Show("You must select which method of checkum calculation you want!", "Find files error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            using (Hasher hasher = new Hasher(hasherType))
+            {
+
+                // to ensure that no files are entered
+                _filePaths.Clear();
+                Finder finder = new Finder();
+                finder.FindProgress += new EventHandler<IncreasedPercentage>(OnProgressChanged);
+                var findResult = finder.Find(folders, _evaluatedHashTextbox.Text, hasher);
+
+                if (findResult.findStatus == FindStatus.FilesFound)
+                {
+                    MessageBox.Show("Done!");
+                    _filePaths.AddRange(findResult.files);
+                    foreach(var file in findResult.files)
+                    {
+                        _selectedFilesCheckbox.Items.Add(file);
+                    }
+                }
+                else if (findResult.findStatus == FindStatus.FilesNotFound)
+                {
+                    MessageBox.Show("Found no files that combine matching checksum", "No files found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+            }
+
+
+        }
         private void OnCalculate(object sender, EventArgs e)
         {
             var hasherType = GetSelectedHasherType();
@@ -75,6 +150,11 @@ namespace FileHash
             if (args.Percentage <= _progressBar.Maximum)
             {
                 _progressBar.Value = (int)args.Percentage;
+            }
+
+            if (_progressBar.Value == _progressBar.Maximum)
+            {
+                _progressBar.Value = _progressBar.Minimum;
             }
         }
         private void OnItemMoveUpInTheList(object sender, EventArgs e)
