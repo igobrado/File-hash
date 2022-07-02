@@ -31,6 +31,7 @@ namespace FileHash
         {
             this.components = new System.ComponentModel.Container();
             this._hashingAlgorithmBox = new System.Windows.Forms.GroupBox();
+            this._crc64HAlgo = new System.Windows.Forms.RadioButton();
             this._crc32HAlgo = new System.Windows.Forms.RadioButton();
             this._md5HAlgo = new System.Windows.Forms.RadioButton();
             this._sha256HAlgo = new System.Windows.Forms.RadioButton();
@@ -48,7 +49,6 @@ namespace FileHash
             this._progressBar = new System.Windows.Forms.ProgressBar();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this._crc64HAlgo = new System.Windows.Forms.RadioButton();
             this._hashingAlgorithmBox.SuspendLayout();
             this._filesGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -66,6 +66,17 @@ namespace FileHash
             this._hashingAlgorithmBox.TabIndex = 0;
             this._hashingAlgorithmBox.TabStop = false;
             this._hashingAlgorithmBox.Text = "Hashing algorithm";
+            // 
+            // _crc64HAlgo
+            // 
+            this._crc64HAlgo.AutoSize = true;
+            this._crc64HAlgo.Location = new System.Drawing.Point(15, 119);
+            this._crc64HAlgo.Name = "_crc64HAlgo";
+            this._crc64HAlgo.Size = new System.Drawing.Size(60, 19);
+            this._crc64HAlgo.TabIndex = 4;
+            this._crc64HAlgo.TabStop = true;
+            this._crc64HAlgo.Text = "CRC64";
+            this._crc64HAlgo.UseVisualStyleBackColor = true;
             // 
             // _crc32HAlgo
             // 
@@ -163,6 +174,7 @@ namespace FileHash
             // 
             // _moveUpButton
             // 
+            this._moveUpButton.BackColor = System.Drawing.Color.White;
             this._moveUpButton.Location = new System.Drawing.Point(264, 178);
             this._moveUpButton.Name = "_moveUpButton";
             this._moveUpButton.Size = new System.Drawing.Size(85, 23);
@@ -216,17 +228,6 @@ namespace FileHash
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
-            // _crc64HAlgo
-            // 
-            this._crc64HAlgo.AutoSize = true;
-            this._crc64HAlgo.Location = new System.Drawing.Point(15, 119);
-            this._crc64HAlgo.Name = "_crc64HAlgo";
-            this._crc64HAlgo.Size = new System.Drawing.Size(60, 19);
-            this._crc64HAlgo.TabIndex = 4;
-            this._crc64HAlgo.TabStop = true;
-            this._crc64HAlgo.Text = "CRC64";
-            this._crc64HAlgo.UseVisualStyleBackColor = true;
             // 
             // Application
             // 

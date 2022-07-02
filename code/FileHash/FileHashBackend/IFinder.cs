@@ -29,12 +29,5 @@ namespace FileHashBackend
         /// <param name="hasher"></param>
         /// <returns></returns>
         FindResult Find(List<string> foldersToSearch, string checksum, Hasher hasher);
-
-        /// <summary>
-        /// Methods is getting all the files in the directory.
-        /// </summary>
-        /// <param name="foldersToSearch"></param>
-        /// <returns></returns>
-        List<string> GetAllFilesInDirectory(List<string> foldersToSearch);
     }
 }
