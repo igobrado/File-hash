@@ -194,15 +194,16 @@ namespace FileHash
                 {
                     string tmpString = _selectedFilesCheckbox.Items[itemIndex].ToString();
 
+                    bool itemCheckedStatePrevious = _selectedFilesCheckbox.GetItemChecked(itemIndex);
+                    bool itemCheckedStateNext = _selectedFilesCheckbox.GetItemChecked(newIndexOfPreviousItem);
+
                     _selectedFilesCheckbox.Items[itemIndex] = _selectedFilesCheckbox.Items[newIndexOfPreviousItem];
                     _selectedFilesCheckbox.Items[newIndexOfPreviousItem] = tmpString;
-                    
-                    // in case that it was checked
-                    if (_selectedFilesCheckbox.GetItemChecked(itemIndex))
-                    {
-                        _selectedFilesCheckbox.SetItemCheckState(itemIndex, CheckState.Unchecked);
-                        _selectedFilesCheckbox.SetItemCheckState(newIndexOfPreviousItem, CheckState.Checked);
-                    }
+
+                    _selectedFilesCheckbox.SetItemCheckState(newIndexOfPreviousItem, itemCheckedStatePrevious == true ? CheckState.Checked : CheckState.Unchecked);
+                    _selectedFilesCheckbox.SetItemCheckState(itemIndex, itemCheckedStateNext == true ? CheckState.Checked : CheckState.Unchecked);
+
+                    _selectedFilesCheckbox.SetSelected(newIndexOfPreviousItem, true);
                 }
             }
         }
@@ -218,12 +219,13 @@ namespace FileHash
                 _selectedFilesCheckbox.Items[itemIndex] = _selectedFilesCheckbox.Items[newIndexOfPreviousItem];
                 _selectedFilesCheckbox.Items[newIndexOfPreviousItem] = tmpString;
 
-                // in case that it was checked
-                if (_selectedFilesCheckbox.GetItemChecked(itemIndex))
-                {
-                    _selectedFilesCheckbox.SetItemCheckState(itemIndex, CheckState.Unchecked);
-                    _selectedFilesCheckbox.SetItemCheckState(newIndexOfPreviousItem, CheckState.Checked);
-                }
+                bool itemCheckedStatePrevious = _selectedFilesCheckbox.GetItemChecked(itemIndex);
+                bool itemCheckedStateNext = _selectedFilesCheckbox.GetItemChecked(newIndexOfPreviousItem);
+
+                _selectedFilesCheckbox.SetItemCheckState(newIndexOfPreviousItem, itemCheckedStatePrevious == true ? CheckState.Checked : CheckState.Unchecked);
+                _selectedFilesCheckbox.SetItemCheckState(itemIndex, itemCheckedStateNext == true ? CheckState.Checked : CheckState.Unchecked);
+
+                _selectedFilesCheckbox.SetSelected(newIndexOfPreviousItem, true);
             }
         }
         private void OnRemoveClicked(object sender, EventArgs e)
