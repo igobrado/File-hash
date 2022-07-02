@@ -198,9 +198,9 @@ namespace FileHash
             this._evaluatedHashLabel.AutoSize = true;
             this._evaluatedHashLabel.Location = new System.Drawing.Point(20, 284);
             this._evaluatedHashLabel.Name = "_evaluatedHashLabel";
-            this._evaluatedHashLabel.Size = new System.Drawing.Size(89, 15);
+            this._evaluatedHashLabel.Size = new System.Drawing.Size(66, 15);
             this._evaluatedHashLabel.TabIndex = 5;
-            this._evaluatedHashLabel.Text = "Evaluated hash:";
+            this._evaluatedHashLabel.Text = "Checksum:";
             // 
             // _progressBar
             // 
