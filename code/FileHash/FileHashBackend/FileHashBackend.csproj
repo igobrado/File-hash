@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="CombinationStream" Version="2.2.2" />
     <PackageReference Include="Combinatorics" Version="2.0.0" />
+    <PackageReference Include="Crc32.NET" Version="1.2.0" />
   </ItemGroup>
 
 </Project>

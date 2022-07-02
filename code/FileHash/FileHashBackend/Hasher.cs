@@ -4,6 +4,8 @@ using System.Security.Cryptography;
 using System.Diagnostics;
 using System.Buffers;
 using System.IO;
+using Force.Crc32;
+using DamienG.Security.Cryptography;
 
 namespace FileHashBackend
 {
@@ -12,7 +14,10 @@ namespace FileHashBackend
         SHA256,
         MD5,
         SHA1,
+        CRC32,
+        CRC64,
         Invalid
+
     }
     /// <summary>
     /// Custom event arguments which provides a progress of the current operation.
@@ -44,6 +49,12 @@ namespace FileHashBackend
                     break;
                 case HasherType.SHA1:
                     _hashAlgorithm = SHA1.Create();
+                    break;
+                case HasherType.CRC32:
+                    _hashAlgorithm = new Force.Crc32.Crc32Algorithm();
+                    break;
+                case HasherType.CRC64:
+                    _hashAlgorithm = new Crc64Iso();
                     break;
                 default:
                     Debug.Assert(false, "Invalid hasher type received");

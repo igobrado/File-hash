@@ -48,19 +48,21 @@ namespace FileHash
             this._progressBar = new System.Windows.Forms.ProgressBar();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this._crc64HAlgo = new System.Windows.Forms.RadioButton();
             this._hashingAlgorithmBox.SuspendLayout();
             this._filesGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // _hashingAlgorithmBox
             // 
+            this._hashingAlgorithmBox.Controls.Add(this._crc64HAlgo);
             this._hashingAlgorithmBox.Controls.Add(this._crc32HAlgo);
             this._hashingAlgorithmBox.Controls.Add(this._md5HAlgo);
             this._hashingAlgorithmBox.Controls.Add(this._sha256HAlgo);
             this._hashingAlgorithmBox.Controls.Add(this._shaOneHAlgo);
             this._hashingAlgorithmBox.Location = new System.Drawing.Point(408, 34);
             this._hashingAlgorithmBox.Name = "_hashingAlgorithmBox";
-            this._hashingAlgorithmBox.Size = new System.Drawing.Size(238, 130);
+            this._hashingAlgorithmBox.Size = new System.Drawing.Size(238, 150);
             this._hashingAlgorithmBox.TabIndex = 0;
             this._hashingAlgorithmBox.TabStop = false;
             this._hashingAlgorithmBox.Text = "Hashing algorithm";
@@ -120,6 +122,7 @@ namespace FileHash
             // 
             // _findFilesButton
             // 
+            this._findFilesButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this._findFilesButton.Location = new System.Drawing.Point(489, 219);
             this._findFilesButton.Name = "_findFilesButton";
             this._findFilesButton.Size = new System.Drawing.Size(157, 23);
@@ -214,6 +217,17 @@ namespace FileHash
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
+            // _crc64HAlgo
+            // 
+            this._crc64HAlgo.AutoSize = true;
+            this._crc64HAlgo.Location = new System.Drawing.Point(15, 119);
+            this._crc64HAlgo.Name = "_crc64HAlgo";
+            this._crc64HAlgo.Size = new System.Drawing.Size(60, 19);
+            this._crc64HAlgo.TabIndex = 4;
+            this._crc64HAlgo.TabStop = true;
+            this._crc64HAlgo.Text = "CRC64";
+            this._crc64HAlgo.UseVisualStyleBackColor = true;
+            // 
             // Application
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -226,6 +240,8 @@ namespace FileHash
             this.Controls.Add(this._findFilesButton);
             this.Controls.Add(this._calculateHashButton);
             this.Controls.Add(this._hashingAlgorithmBox);
+            this.MaximumSize = new System.Drawing.Size(754, 387);
+            this.MinimumSize = new System.Drawing.Size(754, 387);
             this.Name = "Application";
             this.Text = "Applicaiton";
             this._hashingAlgorithmBox.ResumeLayout(false);
@@ -255,6 +271,7 @@ namespace FileHash
         private System.Windows.Forms.ProgressBar _progressBar;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.RadioButton _crc64HAlgo;
     }
 }
 
