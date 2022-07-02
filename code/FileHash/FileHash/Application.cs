@@ -7,6 +7,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Linq;
 using FileHashBackend;
+using System.Drawing;
 
 namespace FileHash
 {
@@ -16,6 +17,10 @@ namespace FileHash
         {
             InitializeComponent();
             Load += new EventHandler(InitializeModule);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
+        }
 
         private void Form1_Load(object sender, EventArgs e) => _oldSize = base.Size;
         protected override void OnResize(System.EventArgs e)
