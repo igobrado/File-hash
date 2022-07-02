@@ -16,6 +16,26 @@ namespace FileHash
         {
             InitializeComponent();
             Load += new EventHandler(InitializeModule);
+
+        private void Form1_Load(object sender, EventArgs e) => _oldSize = base.Size;
+        protected override void OnResize(System.EventArgs e)
+        {
+            base.OnResize(e);
+
+            foreach (Control cnt in this.Controls)
+                ResizeAll(cnt, base.Size);
+
+            _oldSize = base.Size;
+        }
+        private void ResizeAll(Control control, Size newSize)
+        {
+            int width = newSize.Width - _oldSize.Width;
+            control.Left += (control.Left * width) / _oldSize.Width;
+            control.Width += (control.Width * width) / _oldSize.Width;
+
+            int height = newSize.Height - _oldSize.Height;
+            control.Top += (control.Top * height) / _oldSize.Height;
+            control.Height += (control.Height * height) / _oldSize.Height;
         }
 
         private void InitializeModule(object sender, EventArgs e)
@@ -306,5 +326,6 @@ namespace FileHash
 
         private OpenFileDialog _fileDialog;
         private List<string>   _filePaths;
+        private Size           _oldSize;
     }
 }
