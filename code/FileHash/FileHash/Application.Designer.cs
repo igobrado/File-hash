@@ -237,8 +237,6 @@ namespace FileHash
         }
 
         #endregion
-        private CalculateChecksumFromFilesControl CalculateChecksumFromFilesControl;
-        private FindChecksumFromGivenFilesOrFolder FindChecksumFromGivenFilesOrFolderControl;
         private System.Windows.Forms.GroupBox _hashingAlgorithmBox;
         private System.Windows.Forms.RadioButton _shaOneHAlgo;
         private System.Windows.Forms.RadioButton _md5HAlgo;
