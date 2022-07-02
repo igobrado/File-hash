@@ -12,6 +12,11 @@ namespace FileHashBackend
         
         public FindResult Find(List<string> foldersToSearch, string checksum, Hasher hasher)
         {
+            if (foldersToSearch.Count == 0)
+            {
+                return new FindResult { findStatus = FindStatus.InvalidArguments, files = null, filesSize = 0 };
+            }
+
             var fileList = new List<string>();
 
             foreach (var folderPath in foldersToSearch)
