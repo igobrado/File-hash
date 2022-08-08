@@ -1,0 +1,43 @@
+@startuml ProjectComponentDiagram
+
+allowmixing
+
+component ExternComponents #LightGreen{
+    component NugetPackageManager #cyan{
+        package Combinatorics #LightYellow{
+            interface Permutations      
+        }
+        package Force #LightYellow{
+            interface Crc32
+        }
+    }
+
+    component Github #cyan{
+        package DamienG.Security.Cryptography #LightYellow  {
+            interface Crc64Iso
+        }
+    }
+}
+
+component #LightGreen {
+    component "FileHashBackend" <<ModelLibrary>> #LightYellow {
+        interface "Hasher" 
+        interface "Finder" 
+    }
+    
+    component "FileHashApplication" as FileHashExe #LightYellow
+    component "FileHashBackendTest" as Tests #LightYellow
+
+    Hasher --> Crc32 #red  : "Uses"
+    Hasher --> Crc64Iso #red : "Uses"
+    Finder --> Permutations #red : "Uses"
+    Finder --> Hasher
+
+    Hasher <-up- Tests : "Tests"
+    Finder <-up- Tests : "Tests"
+
+    Hasher <-down- FileHashExe : "Uses"
+    Finder <-down- FileHashExe : "Uses"
+}
+
+@enduml

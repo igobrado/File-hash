@@ -1,0 +1,80 @@
+@startuml FileHashBackendClassDiagram
+
+
+
+namespace FileHash{
+
+    class IncreasePercentage{
+        float percentage
+        +IncreasePercentage(float percentage)
+    }
+
+    enum HasherType as "HashType" <<stereotype>> {
+        SHA256
+        MD5
+        SHA1
+        CRC32
+        CRC64 
+    }
+
+    enum FindStatus as "FindStatus" <<stereotype>> {
+        FilesFound
+        FilesNotFound
+        InvalidArguments
+    }
+
+    class FindResult
+    {
+        FindStatus findStatus
+        List<string> files
+        double filesSize
+    }
+
+    interface IFinder<<abstract>>{
+        {abstract} FindResult Find(Collection<string> foldersToSearch, string checksum, Hasher hasher)
+    }
+
+    class Hasher{
+        HashAlgorithm hasher
+        +Hasher(HasherType hasherType)
+        +GetHash(Collection<Stream> streams, long streamSize)
+        +GetHash(Collection<string> files)
+        +Dispose()
+        #OnUserUpdate(IncreasePercentage)
+    }
+
+    class Finder{
+        +Find(Collection<string> foldersToSearch, string hasher, Hasher hasher) : FindResult
+        #FindInCombination(Collection<string> fileList, string hasher, Hasher hasher) : FindResult
+        #GetCombinations(Collection<string> listOfFilesToCombine) : Collection<Collection<string>>
+        #OnUserUpdate(IncreasePercentage)
+
+        EventHandler<IncreasePercentage> FindProgress
+    }
+    
+    class Creator << (S,#FF7700) Singleton >> {
+        {static} GetInstance() : Creator
+        {static} GetHasher(HasherType) : Hasher
+        {static} GetFinder(HasherType) : Finder
+    }
+
+    FindResult *-- FindStatus
+    HasherType *-- Hasher 
+    Finder *-- Hasher
+    IFinder *-- FindResult
+    IFinder --|> Finder
+    Finder *-- IncreasePercentage
+    Hasher *-- IncreasePercentage
+
+    note right of Hasher::hasher
+        Instancira se u konstruktoru ovisno o željenom tipu
+        kriptografske hash funkcije.
+    end note
+
+    note top of Creator
+        Singleton klasa koja služi za kreiraniranje
+        instanci Hasher i Finder objekta.
+    end note
+}
+
+@enduml
