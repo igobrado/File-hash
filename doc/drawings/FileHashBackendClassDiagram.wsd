@@ -32,44 +32,28 @@ namespace FileHash{
 
     interface IFinder<<abstract>>{
         {abstract} FindResult Find(Collection<string> foldersToSearch, string checksum, Hasher hasher)
+        {abstract} RegisterEventHandler(EventHandler<IncreasedPercentage> eventHandler) : void
+
     }
-
-    class Hasher{
-        HashAlgorithm hasher
-        +Hasher(HasherType hasherType)
-        +GetHash(Collection<Stream> streams, long streamSize)
-        +GetHash(Collection<string> files)
-        +Dispose()
-        #OnUserUpdate(IncreasePercentage)
-    }
-
-    class Finder{
-        +Find(Collection<string> foldersToSearch, string hasher, Hasher hasher) : FindResult
-        #FindInCombination(Collection<string> fileList, string hasher, Hasher hasher) : FindResult
-        #GetCombinations(Collection<string> listOfFilesToCombine) : Collection<Collection<string>>
-        #OnUserUpdate(IncreasePercentage)
-
-        EventHandler<IncreasePercentage> FindProgress
+    interface IHasher<<abstract>>{
+        {abstract} Tuple<string, float> GetHash(List<string> files) : void
+        {abstract} RegisterEventHandler(EventHandler<IncreasedPercentage> eventHandler) : void
     }
     
     class Creator << (S,#FF7700) Singleton >> {
         {static} GetInstance() : Creator
-        {static} GetHasher(HasherType) : Hasher
-        {static} GetFinder(HasherType) : Finder
+        {static} GetHasher(HasherType) : IHasher
+        {static} GetFinder(HasherType) : IFinder
     }
 
-    FindResult *-- FindStatus
-    HasherType *-- Hasher 
-    Finder *-- Hasher
-    IFinder *-- FindResult
-    IFinder --|> Finder
-    Finder *-- IncreasePercentage
-    Hasher *-- IncreasePercentage
-
-    note right of Hasher::hasher
-        Instancira se u konstruktoru ovisno o željenom tipu
-        kriptografske hash funkcije.
-    end note
+    FindResult *-- FindStatus : "<<uses>>"
+    HasherType *-- IHasher : "<<uses>>"
+    IFinder *-- IHasher : "<<uses>>"
+    IFinder *-- FindResult : "<<uses>>"
+    IFinder *-- IncreasePercentage : "<<uses>>"
+    IHasher *-- IncreasePercentage : "<<uses>>"
+    Creator --.> IHasher : "<<instantiates>>"
+    Creator --.> IFinder : "<<instantiates>>"
 
     note top of Creator
         Singleton klasa koja služi za kreiraniranje
