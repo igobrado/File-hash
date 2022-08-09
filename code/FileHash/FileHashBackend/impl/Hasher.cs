@@ -7,7 +7,7 @@ using System.IO;
 using Force.Crc32;
 using DamienG.Security.Cryptography;
 
-namespace FileHashBackend
+namespace FileHashBackend.Impl
 {
     internal class Hasher : IHasher
     {

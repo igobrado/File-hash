@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace FileHashBackend
+namespace FileHashBackend.Impl
 {
     internal class Finder : IFinder
     {

@@ -18,16 +18,13 @@ namespace FileHashBackend
 
         public IHasher GetHasher(HasherType type)
         {
-            return new Hasher(type);
+            return new Impl.Hasher(type);
         }
 
         public IFinder GetFinder(HasherType type)
         {
-            return new Finder(new Hasher(type));
+            return new Impl.Finder(new Impl.Hasher(type));
         }
-        private Creator()
-        {
-
-        }
+        private Creator(){}
     }
 }
