@@ -9,7 +9,7 @@ using DamienG.Security.Cryptography;
 
 namespace FileHashBackend
 {
-    public class Hasher : IHasher
+    internal class Hasher : IHasher
     {
         public EventHandler<IncreasedPercentage> HashProgress;
         public Hasher(HasherType wantedHasherType)

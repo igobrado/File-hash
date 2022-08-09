@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace FileHashBackend
 {
-    public class Finder : IFinder
+    internal class Finder : IFinder
     {
         private Hasher _hasher;
         Finder() : this(null)

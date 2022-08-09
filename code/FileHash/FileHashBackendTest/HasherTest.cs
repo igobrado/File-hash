@@ -21,7 +21,7 @@ namespace FileHashBackendTest
             {
                 var hasherType = (HasherType)i;
 
-                Hasher hasher = new Hasher(hasherType);
+                IHasher hasher = Creator.Instance.GetHasher(hasherType);
                 System.Tuple<string, float> result = hasher.GetHash(new List<string>());
 
                 Assert.AreEqual(result.Item1, "");
@@ -57,7 +57,7 @@ namespace FileHashBackendTest
             for (int i = (int)HasherType.MD5; i < (int)HasherType.Invalid; ++i)
             {
                 var hasherType = (HasherType)i;
-                using (Hasher hasher = new Hasher(hasherType))
+                using (IHasher hasher = Creator.Instance.GetHasher(hasherType))
                 {
                     System.Tuple<string, float> result = hasher.GetHash(files);
 
@@ -108,7 +108,7 @@ namespace FileHashBackendTest
             for (int i = (int)HasherType.MD5; i < (int)HasherType.Invalid; ++i)
             {
                 var hasherType = (HasherType)i;
-                using (Hasher hasher = new Hasher(hasherType))
+                using (IHasher hasher = Creator.Instance.GetHasher(hasherType))
                 {
                     System.Tuple<string, float> result = hasher.GetHash(files);
                     System.Tuple<string, float> resultOfCombined = hasher.GetHash(filesTwo);

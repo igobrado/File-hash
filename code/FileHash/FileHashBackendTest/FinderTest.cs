@@ -26,7 +26,7 @@ namespace FileHashBackendTest
         [Test]
         public void FindFilesWithEmptyFolderList()
         {
-            Finder finder = new Finder(null);
+            IFinder finder = Creator.Instance.GetFinder(HasherType.SHA1);
             var result = finder.Find(new List<string>(), "1234");
 
             Assert.AreEqual(FindStatus.InvalidArguments, result.findStatus);
