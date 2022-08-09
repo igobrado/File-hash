@@ -26,8 +26,8 @@ namespace FileHashBackendTest
         [Test]
         public void FindFilesWithEmptyFolderList()
         {
-            Finder finder = new Finder();
-            var result = finder.Find(new List<string>(), "1234", null);
+            Finder finder = new Finder(null);
+            var result = finder.Find(new List<string>(), "1234");
 
             Assert.AreEqual(FindStatus.InvalidArguments, result.findStatus);
         }
@@ -47,20 +47,17 @@ namespace FileHashBackendTest
                 folderToSearch.Add(systemPath);
 
                 var hasherType = (HasherType)i;
-                using (Hasher hasher = new Hasher(hasherType))
-                {
-                    var finder = new Finder();
-                    var findResult = finder.Find(folderToSearch, "myinvalidchecksum3129348124", hasher);
+                var finder = Creator.Instance.GetFinder(hasherType);
+                var findResult = finder.Find(folderToSearch, "myinvalidchecksum3129348124");
 
-                    // find status must be ok
-                    Assert.AreEqual(findResult.findStatus, FindStatus.FilesNotFound);
+                // find status must be ok
+                Assert.AreEqual(findResult.findStatus, FindStatus.FilesNotFound);
 
-                    // file size must be same as hasher one
-                    Assert.AreEqual(0, findResult.filesSize);
+                // file size must be same as hasher one
+                Assert.AreEqual(0, findResult.filesSize);
 
-                    // file ordering must be the same as one used for calculating the hash
-                    Assert.AreEqual(null, null);
-                }
+                // file ordering must be the same as one used for calculating the hash
+                Assert.AreEqual(null, null);
             }
         }
 
@@ -83,24 +80,22 @@ namespace FileHashBackendTest
             for (int i = (int)HasherType.MD5; i < (int)HasherType.Invalid; ++i)
             {
                 var hasherType = (HasherType)i;
-                using (Hasher hasher = new Hasher(hasherType))
-                {
-                    System.Tuple<string, float> result = hasher.GetHash(files);
-                    var foldersToSearch = new List<string>();
-                    foldersToSearch.Add(systemPath);
 
-                    var finder = new Finder();
-                    var findResult = finder.Find(foldersToSearch, result.Item1, hasher);
+                System.Tuple<string, float> result = Creator.Instance.GetHasher(hasherType).GetHash(files);
+                var foldersToSearch = new List<string>();
+                foldersToSearch.Add(systemPath);
 
-                    // find status must be ok
-                    Assert.AreEqual(findResult.findStatus, FindStatus.FilesFound);
+                var finder = Creator.Instance.GetFinder(hasherType);
+                var findResult = finder.Find(foldersToSearch, result.Item1);
+
+                // find status must be ok
+                Assert.AreEqual(findResult.findStatus, FindStatus.FilesFound);
                     
-                    // file size must be same as hasher one
-                    Assert.AreEqual(findResult.filesSize, result.Item2);
+                // file size must be same as hasher one
+                Assert.AreEqual(findResult.filesSize, result.Item2);
 
-                    // file ordering must be the same as one used for calculating the hash
-                    Assert.AreEqual(files, findResult.files);
-                }
+                // file ordering must be the same as one used for calculating the hash
+                Assert.AreEqual(files, findResult.files);
             }
 
             File.Delete(fileOne);

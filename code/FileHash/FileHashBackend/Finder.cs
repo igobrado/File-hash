@@ -8,9 +8,18 @@ namespace FileHashBackend
 {
     public class Finder : IFinder
     {
+        private Hasher _hasher;
+        Finder() : this(null)
+        {
+        }
+
+        public Finder(Hasher hasher)
+        {
+            _hasher = hasher;
+        }
         public EventHandler<IncreasedPercentage> FindProgress;
         
-        public FindResult Find(List<string> foldersToSearch, string checksum, Hasher hasher)
+        public FindResult Find(List<string> foldersToSearch, string checksum)
         {
             if (foldersToSearch.Count == 0)
             {
@@ -33,7 +42,11 @@ namespace FileHashBackend
                 }
             }
 
-            return FindInCombination(fileList, checksum, hasher);
+            return FindInCombination(fileList, checksum);
+        }
+        public void RegisterEventHandler(EventHandler<IncreasedPercentage> eventHandler)
+        {
+            FindProgress += eventHandler;
         }
 
         /// <summary>
@@ -43,7 +56,7 @@ namespace FileHashBackend
         /// <param name="checksum"></param>
         /// <param name="hasher"></param>
         /// <returns></returns>
-        protected FindResult FindInCombination(List<string> fileList, string checksum, Hasher hasher)
+        protected FindResult FindInCombination(List<string> fileList, string checksum)
         {
             var listOfAllCombinations = GetCombinations(fileList);
 
@@ -54,7 +67,7 @@ namespace FileHashBackend
                 Permutations<string> permutations = new Permutations<string>(combinaton);
                 foreach (var permutation in permutations)
                 {
-                    var hash = hasher.GetHash(permutation.ToList());
+                    var hash = _hasher.GetHash(permutation.ToList());
 
                     if (checksum == hash.Item1)
                     {

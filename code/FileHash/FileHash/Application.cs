@@ -103,30 +103,29 @@ namespace FileHash
                 MessageBox.Show("You must select which method of checkum calculation you want!", "Find files error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            using (Hasher hasher = new Hasher(hasherType))
+
+            // to ensure that no files are entered
+            _filePaths.Clear();
+            IFinder finder = Creator.Instance.GetFinder(hasherType);
+            finder.RegisterEventHandler( new EventHandler<IncreasedPercentage>(OnProgressChanged));
+
+            var findResult = finder.Find(folders, _evaluatedHashTextbox.Text);
+
+            if (findResult.findStatus == FindStatus.FilesFound)
             {
-
-                // to ensure that no files are entered
-                _filePaths.Clear();
-                Finder finder = new Finder();
-                finder.FindProgress += new EventHandler<IncreasedPercentage>(OnProgressChanged);
-                var findResult = finder.Find(folders, _evaluatedHashTextbox.Text, hasher);
-
-                if (findResult.findStatus == FindStatus.FilesFound)
+                MessageBox.Show("Done!");
+                _filePaths.AddRange(findResult.files);
+                foreach(var file in findResult.files)
                 {
-                    MessageBox.Show("Done!");
-                    _filePaths.AddRange(findResult.files);
-                    foreach(var file in findResult.files)
-                    {
-                        _selectedFilesCheckbox.Items.Add(file);
-                    }
+                    _selectedFilesCheckbox.Items.Add(file);
                 }
-                else if (findResult.findStatus == FindStatus.FilesNotFound)
-                {
-                    MessageBox.Show("Found no files that combine matching checksum", "No files found", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
             }
+            else if (findResult.findStatus == FindStatus.FilesNotFound)
+            {
+                MessageBox.Show("Found no files that combine matching checksum", "No files found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+          
 
 
         }
@@ -156,9 +155,9 @@ namespace FileHash
                 }
             }
 
-            using (Hasher hasher = new Hasher(hasherType))
+            using (IHasher hasher = Creator.Instance.GetHasher(hasherType))
             {
-                hasher.HashProgress += new EventHandler<IncreasedPercentage>(OnProgressChanged);
+                hasher.RegisterEventHandler(new EventHandler<IncreasedPercentage>(OnProgressChanged));
                 _evaluatedHashTextbox.Text = hasher.GetHash(files).Item1.ToString();
 
                 MessageBox.Show("Done!");

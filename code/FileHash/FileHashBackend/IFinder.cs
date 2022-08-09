@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace FileHashBackend
 {
@@ -28,6 +29,12 @@ namespace FileHashBackend
         /// <param name="checksum"></param>
         /// <param name="hasher"></param>
         /// <returns></returns>
-        FindResult Find(List<string> foldersToSearch, string checksum, Hasher hasher);
+        FindResult Find(List<string> foldersToSearch, string checksum);
+
+        /// <summary>
+        /// Registers event handler for user update
+        /// </summary>
+        /// <param name="eventHandler">Event handler</param>
+        void RegisterEventHandler(EventHandler<IncreasedPercentage> eventHandler);
     }
 }

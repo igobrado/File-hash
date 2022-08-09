@@ -9,32 +9,7 @@ using DamienG.Security.Cryptography;
 
 namespace FileHashBackend
 {
-    public enum HasherType
-    {
-        SHA256,
-        MD5,
-        SHA1,
-        CRC32,
-        CRC64,
-        Invalid
-
-    }
-    /// <summary>
-    /// Custom event arguments which provides a progress of the current operation.
-    /// </summary>
-    public class IncreasedPercentage : EventArgs
-    {
-        public IncreasedPercentage(float percentage)
-        {
-            Percentage = percentage;
-        }
-        public float Percentage { get; set; }
-    }
-
-    /// <summary>
-    /// Provides an abstraction around hashing functions.
-    /// </summary>
-    public class Hasher : IDisposable
+    public class Hasher : IHasher
     {
         public EventHandler<IncreasedPercentage> HashProgress;
         public Hasher(HasherType wantedHasherType)
@@ -61,37 +36,6 @@ namespace FileHashBackend
                     break;
             }
         }
-
-        public string GetHash(List<System.IO.Stream> streams, ulong streamSize)
-        {
-            var block = ArrayPool<byte>.Shared.Rent(0);
-            float progress = 0;
-            foreach (var stream in streams)
-            {
-                block = ArrayPool<byte>.Shared.Rent(8192);
-
-                int length;
-                while ((length = stream.Read(block, 0, block.Length)) > 0)
-                {
-                    _hashAlgorithm.TransformBlock(block, 0, length, null, 0);
-
-                    progress += length;
-                    float completedPercentage = (progress / streamSize) * 100;
-
-                    OnUserUpdate(new IncreasedPercentage(completedPercentage));
-                }
-            }
-            _hashAlgorithm.TransformFinalBlock(block, 0, 0);
-
-            return BitConverter.ToString(_hashAlgorithm.Hash).Replace("-", "");
-        }
-
-        /// <summary>
-        /// Gets the hash of the providen files.
-        /// </summary>
-        /// <param name="files"></param>
-        /// 
-        /// <returns> Tuple which contains pair - <HASH, Size of files combined in MB> </returns>
         public Tuple<string, float> GetHash(List<string> files)
         {
             if (files.Count == 0)
@@ -125,6 +69,35 @@ namespace FileHashBackend
             }
 
             return result;
+        }
+
+        protected string GetHash(List<System.IO.Stream> streams, ulong streamSize)
+        {
+            var block = ArrayPool<byte>.Shared.Rent(0);
+            float progress = 0;
+            foreach (var stream in streams)
+            {
+                block = ArrayPool<byte>.Shared.Rent(8192);
+
+                int length;
+                while ((length = stream.Read(block, 0, block.Length)) > 0)
+                {
+                    _hashAlgorithm.TransformBlock(block, 0, length, null, 0);
+
+                    progress += length;
+                    float completedPercentage = (progress / streamSize) * 100;
+
+                    OnUserUpdate(new IncreasedPercentage(completedPercentage));
+                }
+            }
+            _hashAlgorithm.TransformFinalBlock(block, 0, 0);
+
+            return BitConverter.ToString(_hashAlgorithm.Hash).Replace("-", "");
+        }
+
+        public void RegisterEventHandler(EventHandler<IncreasedPercentage> eventHandler)
+        {
+            HashProgress += eventHandler;
         }
 
         public void Dispose()
