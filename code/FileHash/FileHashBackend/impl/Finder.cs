@@ -8,17 +8,11 @@ namespace FileHashBackend.Impl
 {
     internal class Finder : IFinder
     {
-        private Hasher _hasher;
-        Finder() : this(null)
-        {
-        }
-
-        public Finder(Hasher hasher)
+        public Finder(IHasher hasher)
         {
             _hasher = hasher;
         }
-        public EventHandler<IncreasedPercentage> FindProgress;
-        
+
         public FindResult Find(List<string> foldersToSearch, string checksum)
         {
             if (foldersToSearch.Count == 0)
@@ -46,16 +40,9 @@ namespace FileHashBackend.Impl
         }
         public void RegisterEventHandler(EventHandler<IncreasedPercentage> eventHandler)
         {
-            FindProgress += eventHandler;
+            _findProgress += eventHandler;
         }
 
-        /// <summary>
-        /// Finds list of files that are matching certain checksum
-        /// </summary>
-        /// <param name="listOfFilesToFind"></param>
-        /// <param name="checksum"></param>
-        /// <param name="hasher"></param>
-        /// <returns></returns>
         protected FindResult FindInCombination(List<string> fileList, string checksum)
         {
             var listOfAllCombinations = GetCombinations(fileList);
@@ -89,10 +76,6 @@ namespace FileHashBackend.Impl
 
         }
 
-        /// <summary>
-        /// Calculates all of the combinations of the given files in constructor.
-        /// </summary>
-        /// <returns></returns>
         protected List<List<string>> GetCombinations(List<string> listOfFilesToCombine)
         {
             var listOfAllCombinations = new List<List<string>>();
@@ -109,11 +92,14 @@ namespace FileHashBackend.Impl
         }
         protected virtual void OnUserUpdate(IncreasedPercentage percentage)
         {
-            EventHandler<IncreasedPercentage> raiseEvent = FindProgress;
+            EventHandler<IncreasedPercentage> raiseEvent = _findProgress;
             if (raiseEvent != null)
             {
                 raiseEvent(this, percentage);
             }
         }
+
+        private IHasher _hasher;
+        private EventHandler<IncreasedPercentage> _findProgress;
     }
 }

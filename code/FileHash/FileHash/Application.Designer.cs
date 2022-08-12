@@ -244,7 +244,7 @@ namespace FileHash
             this.MaximumSize = new System.Drawing.Size(754, 387);
             this.MinimumSize = new System.Drawing.Size(754, 387);
             this.Name = "Application";
-            this.Text = "Applicaiton";
+            this.Text = "FileHash";
             this._hashingAlgorithmBox.ResumeLayout(false);
             this._hashingAlgorithmBox.PerformLayout();
             this._filesGroupBox.ResumeLayout(false);

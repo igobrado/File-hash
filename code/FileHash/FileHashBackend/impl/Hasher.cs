@@ -11,7 +11,6 @@ namespace FileHashBackend.Impl
 {
     internal class Hasher : IHasher
     {
-        public EventHandler<IncreasedPercentage> HashProgress;
         public Hasher(HasherType wantedHasherType)
         {
             switch (wantedHasherType)
@@ -71,6 +70,16 @@ namespace FileHashBackend.Impl
             return result;
         }
 
+        public void RegisterEventHandler(EventHandler<IncreasedPercentage> eventHandler)
+        {
+            _hashProgress += eventHandler;
+        }
+
+        public void Dispose()
+        {
+            _hashAlgorithm.Dispose();
+        }
+
         protected string GetHash(List<System.IO.Stream> streams, ulong streamSize)
         {
             var block = ArrayPool<byte>.Shared.Rent(0);
@@ -95,19 +104,9 @@ namespace FileHashBackend.Impl
             return BitConverter.ToString(_hashAlgorithm.Hash).Replace("-", "");
         }
 
-        public void RegisterEventHandler(EventHandler<IncreasedPercentage> eventHandler)
-        {
-            HashProgress += eventHandler;
-        }
-
-        public void Dispose()
-        {
-            _hashAlgorithm.Dispose();
-        }
-
         protected virtual void OnUserUpdate(IncreasedPercentage e)
         {
-            EventHandler<IncreasedPercentage> raiseEvent = HashProgress;
+            EventHandler<IncreasedPercentage> raiseEvent = _hashProgress;
             if (raiseEvent != null)
             {
                 raiseEvent(this, e);
@@ -115,6 +114,7 @@ namespace FileHashBackend.Impl
         }
 
         private HashAlgorithm _hashAlgorithm;
+        private EventHandler<IncreasedPercentage> _hashProgress;
     }
 }
  
