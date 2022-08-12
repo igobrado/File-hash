@@ -1,1 +1,80 @@
 @startuml FinderRoutine
+@startuml ChecksumCalculationRoutineSeq
+
+actor User
+participant FileHashGuiApplication
+participant Finder
+participant HashAlgorithm
+participant Combinations
+participant Permutations
+
+activate User #FFBBBB
+activate FileHashGuiApplication #FFBBBB
+
+User -> FileHashGuiApplication : SetChecksum(checksum)
+User -> FileHashGuiApplication : FindFiles
+User -> FileHashGuiApplication : SelectHintFolder()
+
+alt  #Yellow if selected folder does not exist
+    FileHashGuiApplication --> User : Error 
+end
+
+FileHashGuiApplication -> FileHashGuiApplication : IsChecksumEmpty()
+activate FileHashGuiApplication
+deactivate FileHashGuiApplication
+
+alt #Yellow checksum is empty
+    FileHashGuiApplication --> User : Error
+end
+
+FileHashGuiApplication -> FileHashGuiApplication : GetFilesInFolder(string)
+activate FileHashGuiApplication #LightYellow
+
+activate Finder #FFBBBB
+activate HashAlgorithm #FFBBBB
+
+FileHashGuiApplication -> Finder : FindInCombination(fileList)
+Finder -> Combinations : Combinations(fileList)
+activate Combinations #FFBBBB
+Combinations --> Finder : return all combinations
+
+loop #LightBlue combinationsIterator != end
+    Finder -> Permutations : Permutations(combinationsIterator)
+    activate Permutations #FFBBBB
+    Permutations --> Finder : return all permutations
+
+    loop #LightBlue permutationsIterator != end
+        Finder -> HashAlgorithm : GetHash(permutationsIterator)
+        HashAlgorithm --> Finder : return checksum
+
+        alt #LightGreen if input checksum == calculated checksum
+            Finder -> Finder : OnUserUpdate(100)
+            Finder --> FileHashGuiApplication : Result
+
+            FileHashGuiApplication -> FileHashGuiApplication : FillFoundFiles list
+            FileHashGuiApplication --> User : Result
+        else #Yellow if checksum not maching
+            Finder -> Finder : OnUserUpdate(increasePercentage)
+        end
+    end
+
+    deactivate Permutations
+    deactivate Combinations
+    deactivate HashAlgorithm
+    deactivate FileHashGuiApplication
+end
+
+
+alt #Yellow No files in directory matching given checksum
+    Finder -> Finder : OnUserUpdate(100)
+    Finder --> FileHashGuiApplication : No found files that are matching given checksum
+    FileHashGuiApplication --> User : No found files that are matching given checksum
+end
+
+
+deactivate Finder #FFBBBB
+deactivate HashAlgorithm #FFBBBB
+deactivate User #FFBBBB
+
+
+@enduml

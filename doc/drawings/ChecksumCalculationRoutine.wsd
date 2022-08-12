@@ -1,37 +1,60 @@
 @startuml ChecksumCalculationRoutineSeq
 
-
 actor User
+participant FileHashGuiApplication
 participant Hasher
 participant HashAlgorithm
 
 activate User #FFBBBB
+activate FileHashGuiApplication #FFBBBB
 
-User -> Hasher : GetChecksum(Collection<Stream> Files)
-activate Hasher #FFBBBB
-activate HashAlgorithm #FFBBBB
+loop #LightBlue How many files user want
+    User -> FileHashGuiApplication : AddFileToList
+end loop
 
-loop #Cyan CollectionIterator != end 
-    alt #Gold fileEmpty
-        Hasher --> User  : return 0x0000
-    else #LightGreen File not empty
-        loop FileIterator != FileEndIterator
-            Hasher -> HashAlgorithm : TransformBlock(block)
-            Hasher -> Hasher : OnUserUpdate(CompletedPercentage)
-        end
-        Hasher -> HashAlgorithm : TransformFinalBlock(block, 0, 0)
-
-        Hasher -> HashAlgorithm : getComputedHash()
-        HashAlgorithm --> Hasher : return result
-        deactivate HashAlgorithm
-
-        Hasher --> User : return result
-        
-        deactivate Hasher
+loop #LightBlue MoveFilesInList
+    alt #LightGreen If move file up
+        User -> FileHashGuiApplication : MoveSelectedFileUp
+    else if move file down
+        User -> FileHashGuiApplication : MoveSelectedFileDown
     end
 end
+
+User -> FileHashGuiApplication : SelectWantedHashAlgorithm
+User -> FileHashGuiApplication : GetChecksum(Collection<Stream> Files)
+
+alt #LightGreen If user selected hash algorithm
+    FileHashGuiApplication -> Hasher : GetChecksum(Collection<Strem> Files)
+    activate Hasher #FFBBBB
+    activate HashAlgorithm #FFBBBB
+
+    loop #LightBlue CollectionIterator != end 
+        alt #LightGreen File not empty
+            loop #LightBlue FileIterator != FileEndIterator
+                Hasher -> HashAlgorithm : TransformBlock(block)
+                Hasher -> FileHashGuiApplication : OnUserUpdate(CompletedPercentage)
+            end
+            Hasher -> HashAlgorithm : TransformFinalBlock(block, 0, 0)
+
+            Hasher -> HashAlgorithm : getComputedHash()
+            HashAlgorithm --> Hasher : return result
+            deactivate HashAlgorithm
+
+            Hasher --> FileHashGuiApplication : return result
+
+            FileHashGuiApplication -> FileHashGuiApplication : SetComputedChecksum()
+            activate FileHashGuiApplication
+
+            deactivate Hasher
+        end
+    end
+else #Yellow user has not selected hash algorithm
+    FileHashGuiApplication -> User : Input error
+end
+
 deactivate HashAlgorithm #FFBBBB
 deactivate User #FFBBBB
+deactivate FileHashGuiApplication #FFBBBB
 
 
 @enduml
