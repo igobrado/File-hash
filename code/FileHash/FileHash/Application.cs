@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Linq;
 using FileHashBackend;
 using System.Drawing;
+using Microsoft.VisualBasic.ApplicationServices;
 
 namespace FileHash
 {
@@ -20,6 +21,7 @@ namespace FileHash
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;
+            _previosOperation = PreviousOperation.NONE;
         }
 
         private void Form1_Load(object sender, EventArgs e) => _oldSize = base.Size;
@@ -58,6 +60,7 @@ namespace FileHash
         
         private void OnFindFiles(object sender, EventArgs e)
         {
+            _previosOperation = PreviousOperation.FINDING;
             if (_selectedFilesCheckbox.Items.Count > 0)
             {
                 MessageBox.Show("To enable file search by the checksum, you must clear the file list!", "Find files error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -99,7 +102,6 @@ namespace FileHash
             var hasherType = GetSelectedHasherType();
             if ( hasherType == HasherType.Invalid)
             {
-
                 MessageBox.Show("You must select which method of checkum calculation you want!", "Find files error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
@@ -113,29 +115,26 @@ namespace FileHash
 
             if (findResult.findStatus == FindStatus.FilesFound)
             {
-                MessageBox.Show("Done!");
                 _filePaths.AddRange(findResult.files);
                 foreach(var file in findResult.files)
                 {
                     _selectedFilesCheckbox.Items.Add(file);
                 }
+                MessageBox.Show("Done!", "Status information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else if (findResult.findStatus == FindStatus.FilesNotFound)
             {
                 MessageBox.Show("Found no files that combine matching checksum", "No files found", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-          
-
-
         }
         private void OnCalculate(object sender, EventArgs e)
         {
+            _previosOperation = PreviousOperation.HASHING;
             var hasherType = GetSelectedHasherType();
 
             if (_selectedFilesCheckbox.CheckedItems.Count == 0)
             {
-                MessageBox.Show("You must select at least one file!");
+                MessageBox.Show("You must select at least one file!", "Input error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -158,9 +157,11 @@ namespace FileHash
             using (IHasher hasher = Creator.Instance.GetHasher(hasherType))
             {
                 hasher.RegisterEventHandler(new EventHandler<IncreasedPercentage>(OnProgressChanged));
-                _evaluatedHashTextbox.Text = hasher.GetHash(files).Item1.ToString();
+                var hashResult = hasher.GetHash(files);
+                _evaluatedHashTextbox.Text = hashResult.Item1.ToString();
 
-                MessageBox.Show("Done!");
+                string output = String.Format("Done!\nSize of hashed files:{0} MB", hashResult.Item2);
+                MessageBox.Show(output, "Calculation information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -236,7 +237,9 @@ namespace FileHash
             }
             _selectedFilesCheckbox.Items.RemoveAt(selectedIndex);
 
-            if (_evaluatedHashTextbox.Text.Length > 0)
+            if ((_evaluatedHashTextbox.Text.Length > 0) 
+                && (_selectedFilesCheckbox.Items.Count > 0)
+                && (_previosOperation != PreviousOperation.FINDING))
             {
                  DialogResult dialogResult = MessageBox.Show("Do you want to recalculate hash with selected files?", "Recalculate hash", MessageBoxButtons.YesNo);
                  if (dialogResult == DialogResult.Yes)
@@ -338,8 +341,16 @@ namespace FileHash
             return HasherType.Invalid;
         }
 
-        private OpenFileDialog _fileDialog;
-        private List<string>   _filePaths;
-        private Size           _oldSize;
+        enum PreviousOperation
+        {
+            NONE,
+            HASHING,
+            FINDING
+        }
+
+        private PreviousOperation _previosOperation;
+        private OpenFileDialog    _fileDialog;
+        private List<string>      _filePaths;
+        private Size              _oldSize;
     }
 }

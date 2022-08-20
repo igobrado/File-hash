@@ -174,14 +174,12 @@ namespace FileHash
             // 
             // _moveUpButton
             // 
-            this._moveUpButton.BackColor = System.Drawing.Color.White;
             this._moveUpButton.Location = new System.Drawing.Point(264, 178);
             this._moveUpButton.Name = "_moveUpButton";
             this._moveUpButton.Size = new System.Drawing.Size(85, 23);
             this._moveUpButton.TabIndex = 2;
             this._moveUpButton.Text = "Move Up";
-            this._moveUpButton.UseVisualStyleBackColor = false;
-            this._moveUpButton.UseWaitCursor = true;
+            this._moveUpButton.UseVisualStyleBackColor = true;
             // 
             // _removeFileButton
             // 
