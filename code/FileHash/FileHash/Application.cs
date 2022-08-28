@@ -9,6 +9,8 @@ using System.Linq;
 using FileHashBackend;
 using System.Drawing;
 using Microsoft.VisualBasic.ApplicationServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FileHash
 {
@@ -21,7 +23,8 @@ namespace FileHash
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;
-            _previosOperation = PreviousOperation.NONE;
+            _previosOperation = Operation.NONE;
+            _currentOperation = Operation.NONE;
         }
 
         private void Form1_Load(object sender, EventArgs e) => _oldSize = base.Size;
@@ -60,7 +63,13 @@ namespace FileHash
         
         private void OnFindFiles(object sender, EventArgs e)
         {
-            _previosOperation = PreviousOperation.FINDING;
+            if (_currentOperation != Operation.NONE)
+            {
+                MessageBox.Show("Current operation in progress, please wait until operation is over!", "Application error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+
             if (_selectedFilesCheckbox.Items.Count > 0)
             {
                 MessageBox.Show("To enable file search by the checksum, you must clear the file list!", "Find files error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -74,11 +83,17 @@ namespace FileHash
             }
 
             var folders = new List<string>();
+            _currentOperation = Operation.FINDING;
+            _previosOperation = Operation.FINDING;
+            _evaluatedHashTextbox.Enabled = false;
+            ToggleCheckboxControl();
+            ToggleEnabledSafe(_evaluatedHashTextbox);
 
             using (var fbd = new FolderBrowserDialog())
             {
                 if (System.Windows.Forms.MessageBox.Show("Please select folder to search the files.", "Select folder", MessageBoxButtons.OK) == DialogResult.Cancel)
                 {
+                    _currentOperation = Operation.NONE;
                     return;
                 }
 
@@ -99,6 +114,7 @@ namespace FileHash
                 }
             }
 
+
             var hasherType = GetSelectedHasherType();
             if ( hasherType == HasherType.Invalid)
             {
@@ -106,37 +122,57 @@ namespace FileHash
             }
 
 
-            // to ensure that no files are entered
-            _filePaths.Clear();
-            IFinder finder = Creator.Instance.GetFinder(hasherType);
-            finder.RegisterEventHandler( new EventHandler<IncreasedPercentage>(OnProgressChanged));
-
-            var findResult = finder.Find(folders, _evaluatedHashTextbox.Text);
-
-            if (findResult.findStatus == FindStatus.FilesFound)
+            Task.Run(() =>
             {
-                _filePaths.AddRange(findResult.files);
-                foreach(var file in findResult.files)
+                // to ensure that no files are entered
+                _filePaths.Clear();
+                IFinder finder = Creator.Instance.GetFinder(hasherType);
+                finder.RegisterEventHandler(new EventHandler<IncreasedPercentage>(OnProgressChanged));
+
+                var findResult = finder.Find(folders, _evaluatedHashTextbox.Text);
+
+                if (findResult.findStatus == FindStatus.FilesFound)
                 {
-                    _selectedFilesCheckbox.Items.Add(file);
+                    _filePaths.AddRange(findResult.files);
+                    foreach (var file in findResult.files)
+                    {
+                        _selectedFilesCheckbox.Items.Add(file);
+                    }
+                    MessageBox.Show("Done!", "Status information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                MessageBox.Show("Done!", "Status information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else if (findResult.findStatus == FindStatus.FilesNotFound)
-            {
-                MessageBox.Show("Found no files that combine matching checksum", "No files found", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+                else if (findResult.findStatus == FindStatus.FilesNotFound)
+                {
+                    MessageBox.Show("Found no files that combine matching checksum", "No files found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                _currentOperation = Operation.NONE;
+                ToggleEnabledSafe(_evaluatedHashTextbox);
+                ToggleCheckboxControl();
+            });
         }
         private void OnCalculate(object sender, EventArgs e)
         {
-            _previosOperation = PreviousOperation.HASHING;
-            var hasherType = GetSelectedHasherType();
+            if (_currentOperation != Operation.NONE)
+            {
+                MessageBox.Show("Current operation in progress, please wait until operation is over!", "Application error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _currentOperation = Operation.NONE;
+                return;
+            }
 
+            var hasherType = GetSelectedHasherType();
             if (_selectedFilesCheckbox.CheckedItems.Count == 0)
             {
+                _currentOperation = Operation.NONE;
+
                 MessageBox.Show("You must select at least one file!", "Input error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+
+            ToggleCheckboxControl();
+            _currentOperation = Operation.HASHING;
+            _previosOperation = Operation.HASHING;
+            _evaluatedHashTextbox.Enabled = false;
 
             var files = new List<string>();
 
@@ -154,15 +190,31 @@ namespace FileHash
                 }
             }
 
-            using (IHasher hasher = Creator.Instance.GetHasher(hasherType))
+            Task.Run(() =>
             {
-                hasher.RegisterEventHandler(new EventHandler<IncreasedPercentage>(OnProgressChanged));
-                var hashResult = hasher.GetHash(files);
-                _evaluatedHashTextbox.Text = hashResult.Item1.ToString();
+                using (IHasher hasher = Creator.Instance.GetHasher(hasherType))
+                {
+                    hasher.RegisterEventHandler(new EventHandler<IncreasedPercentage>(OnProgressChanged));
+                    var hashResult = hasher.GetHash(files);
+                    if (_evaluatedHashTextbox.InvokeRequired)
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            _evaluatedHashTextbox.Text = hashResult.Item1;
+                        }));
+                    }
+                    else
+                    {
+                        _evaluatedHashTextbox.Text = hashResult.Item1;
+                    }
 
-                string output = String.Format("Done!\nSize of hashed files:{0} MB", hashResult.Item2);
-                MessageBox.Show(output, "Calculation information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+                    string output = String.Format("Done!\nSize of hashed files:{0} MB", hashResult.Item2);
+                    MessageBox.Show(output, "Calculation information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                _currentOperation = Operation.NONE;
+                ToggleCheckboxControl();
+                ToggleEnabledSafe(_evaluatedHashTextbox);
+            });
         }
 
         public void OnProgressChanged(object sender, IncreasedPercentage args)
@@ -171,19 +223,34 @@ namespace FileHash
             {
                 return;
             }
-
-            if (args.Percentage <= _progressBar.Maximum)
+            if (this._progressBar.InvokeRequired)
             {
-                _progressBar.Value = (int)args.Percentage;
+                this.Invoke(new Action(() =>
+                {
+                    OnProgressChanged(null, args);
+                }));
             }
-
-            if (_progressBar.Value == _progressBar.Maximum)
+            else
             {
-                _progressBar.Value = _progressBar.Minimum;
+                if (args.Percentage <= _progressBar.Maximum)
+                {
+                    _progressBar.Value = (int)args.Percentage;
+                }
+
+                if (_progressBar.Value == _progressBar.Maximum)
+                {
+                    _progressBar.Value = _progressBar.Minimum;
+                }
             }
         }
         private void OnItemMoveUpInTheList(object sender, EventArgs e)
         {
+            if (_currentOperation != Operation.NONE)
+            {
+                MessageBox.Show("Current operation in progress, please wait until operation is over!", "Application error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (_selectedFilesCheckbox.SelectedItems.Count == 1)
             {
                 // get index of the selected one
@@ -230,6 +297,12 @@ namespace FileHash
         }
         private void OnRemoveClicked(object sender, EventArgs e)
         {
+            if (_currentOperation != Operation.NONE)
+            {
+                MessageBox.Show("Current operation in progress, please wait until operation is over!", "Application error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             int selectedIndex = _selectedFilesCheckbox.SelectedIndex;
             if (selectedIndex < 0)
             {
@@ -239,7 +312,7 @@ namespace FileHash
 
             if ((_evaluatedHashTextbox.Text.Length > 0) 
                 && (_selectedFilesCheckbox.Items.Count > 0)
-                && (_previosOperation != PreviousOperation.FINDING))
+                && (_previosOperation != Operation.FINDING))
             {
                  DialogResult dialogResult = MessageBox.Show("Do you want to recalculate hash with selected files?", "Recalculate hash", MessageBoxButtons.YesNo);
                  if (dialogResult == DialogResult.Yes)
@@ -253,6 +326,12 @@ namespace FileHash
         }
         private void OnAddFileClicked(object sender, EventArgs e)
         {
+            if (_currentOperation != Operation.NONE)
+            {
+                MessageBox.Show("Current operation in progress, please wait until operation is over!", "Application error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -298,23 +377,6 @@ namespace FileHash
             }
         }
 
-        private void InsertItemInList(string newObjectName, List<string> items)
-        {
-            bool isInList = false;
-            foreach (var item in items)
-            {
-                if (newObjectName == item.ToString())
-                {
-                    isInList = true;
-                    break;
-                }
-            }
-
-            if (!isInList)
-            {
-                items.Add(newObjectName);
-            }
-        }
         private HasherType GetSelectedHasherType()
         {
             if (_shaOneHAlgo.Checked)
@@ -341,14 +403,51 @@ namespace FileHash
             return HasherType.Invalid;
         }
 
-        enum PreviousOperation
+        void ToggleEnabledSafe(System.Windows.Forms.TextBox textbox)
+        {
+            if (textbox.InvokeRequired)
+            {
+                Task.Run(() =>
+                {
+                    ToggleEnabledSafe(textbox);
+                });
+            }
+            else
+            {
+                textbox.Enabled = !textbox.Enabled;
+            }
+        }
+        void ToggleEnabledSafe(System.Windows.Forms.RadioButton button)
+        {
+            if (button.InvokeRequired)
+            {
+                Task.Run(() =>
+                {
+                    ToggleEnabledSafe(button);
+                });
+            }
+            else
+            {
+                button.Enabled = !button.Enabled;
+            }
+        }
+        private void ToggleCheckboxControl()
+        {
+            ToggleEnabledSafe(_shaOneHAlgo);
+            ToggleEnabledSafe(_sha256HAlgo);
+            ToggleEnabledSafe(_crc32HAlgo);
+            ToggleEnabledSafe(_crc64HAlgo);
+            ToggleEnabledSafe(_md5HAlgo);
+        }
+        enum Operation
         {
             NONE,
             HASHING,
             FINDING
         }
 
-        private PreviousOperation _previosOperation;
+        private Operation         _currentOperation;
+        private Operation         _previosOperation;
         private OpenFileDialog    _fileDialog;
         private List<string>      _filePaths;
         private Size              _oldSize;

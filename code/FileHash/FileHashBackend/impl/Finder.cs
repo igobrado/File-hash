@@ -46,9 +46,13 @@ namespace FileHashBackend.Impl
         protected FindResult FindInCombination(List<string> fileList, string checksum)
         {
             var listOfAllCombinations = GetCombinations(fileList);
-
             ulong combinationCount = (ulong)listOfAllCombinations.Count;
-            float progress = 0;
+
+            // TOOD HACK
+            ulong progressQuantity = combinationCount + (combinationCount * 10 / 100);
+            float progress = progressQuantity * 10 / 100;
+            OnUserUpdate(new IncreasedPercentage(progress));
+
             foreach (var combinaton in listOfAllCombinations)
             {
                 Permutations<string> permutations = new Permutations<string>(combinaton);
