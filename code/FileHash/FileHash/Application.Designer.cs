@@ -143,6 +143,8 @@ namespace FileHash
             // 
             // _filesGroupBox
             // 
+            this._filesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this._filesGroupBox.Controls.Add(this._selectedFilesCheckbox);
             this._filesGroupBox.Controls.Add(this._moveDownButton);
             this._filesGroupBox.Controls.Add(this._moveUpButton);
