@@ -44,7 +44,7 @@ namespace FileHashBackend.Impl
 
             long streamSize = 0;
 
-                var streams = new List<System.IO.Stream>();
+            var streams = new List<System.IO.Stream>();
             foreach (var item in files)
             {
                 var file = System.IO.File.OpenRead(item);

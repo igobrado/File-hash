@@ -88,6 +88,7 @@ namespace FileHash
             _evaluatedHashTextbox.Enabled = false;
             ToggleCheckboxControl();
             ToggleEnabledSafe(_evaluatedHashTextbox);
+            ToggleButtons();
 
             using (var fbd = new FolderBrowserDialog())
             {
@@ -148,6 +149,7 @@ namespace FileHash
                 _currentOperation = Operation.NONE;
                 ToggleEnabledSafe(_evaluatedHashTextbox);
                 ToggleCheckboxControl();
+                ToggleButtons();
             });
         }
         private void OnCalculate(object sender, EventArgs e)
@@ -168,7 +170,7 @@ namespace FileHash
                 return;
             }
 
-
+            ToggleButtons();
             ToggleCheckboxControl();
             _currentOperation = Operation.HASHING;
             _previosOperation = Operation.HASHING;
@@ -214,6 +216,7 @@ namespace FileHash
                 _currentOperation = Operation.NONE;
                 ToggleCheckboxControl();
                 ToggleEnabledSafe(_evaluatedHashTextbox);
+                ToggleButtons();
             });
         }
 
@@ -318,10 +321,15 @@ namespace FileHash
                  if (dialogResult == DialogResult.Yes)
                  {
                      OnCalculate(null, EventArgs.Empty);
-                 }else if (dialogResult == DialogResult.No)
+                 }
+                 else if (dialogResult == DialogResult.No)
                  {
                      _evaluatedHashTextbox.Text = "";
                  }
+            }
+            else if (_evaluatedHashTextbox.Text.Length > 0)
+            {
+                _evaluatedHashTextbox.Text = "";
             }
         }
         private void OnAddFileClicked(object sender, EventArgs e)
@@ -407,29 +415,42 @@ namespace FileHash
         {
             if (textbox.InvokeRequired)
             {
-                Task.Run(() =>
+                textbox.Invoke(new Action(() =>
                 {
-                    ToggleEnabledSafe(textbox);
-                });
+                    textbox.Enabled = !textbox.Enabled;
+                }));
             }
             else
             {
                 textbox.Enabled = !textbox.Enabled;
             }
         }
-        void ToggleEnabledSafe(System.Windows.Forms.RadioButton button)
+
+        void ToggleEnabledSafe(System.Windows.Forms.ButtonBase button)
         {
             if (button.InvokeRequired)
             {
-                Task.Run(() =>
+                button.Invoke(new Action(() =>
                 {
-                    ToggleEnabledSafe(button);
-                });
+                    button.Enabled = !button.Enabled;
+                }));
             }
             else
             {
                 button.Enabled = !button.Enabled;
             }
+        }
+
+        private void ToggleButtons()
+        {
+            ToggleEnabledSafe(_addFileButton);
+            ToggleEnabledSafe(_removeFileButton);
+
+            ToggleEnabledSafe(_moveUpButton);
+            ToggleEnabledSafe(_moveDownButton);
+            
+            ToggleEnabledSafe(_calculateHashButton);
+            ToggleEnabledSafe(_findFilesButton);
         }
         private void ToggleCheckboxControl()
         {
