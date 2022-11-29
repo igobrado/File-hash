@@ -57,7 +57,7 @@ jobs:
 
     env:
       Solution_Name: FileHash.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
-      Test_Project_Path: File-hash\code\FileHash\FileHashBackendTest\FileHashBackendTest.csproj            # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
+      Test_Project_Path: .\code\FileHash\FileHashBackendTest\FileHashBackendTest.csproj            # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
 
     steps:
     - name: Checkout
