@@ -1,2 +1,0 @@
-* Have a search through the folders
-* Add progress bar
